@@ -31,7 +31,7 @@ Using these differences, we may obtain the following equation, where unknown ter
 
 \begin{align*}
 U_j^{n+1} - \delta^2 U_j^{n+1} &= \delta^2 U_j^n + 2k\delta U_j^n \cdot \delta ^2U_j^n - 3 k U_j^n \cdot \delta U_j^n + k U_j^n \delta^3 U_j^n + U_j^n \\
-&= k \delta^2 U_j^n \left( \frac{1}{h} + 2 \delta U_j^n \right) + U_j^n \left(1 + k \delta^3 U_j^n - 3 k \delta U_j^n \right).
+&= \delta^2 U_j^n \left( 1 + 2k \delta U_j^n \right) + U_j^n \left(1 + k \delta^3 U_j^n - 3 k \delta U_j^n \right).
 \end{align*}
 
 For reference, fully expanding these terms gives the equation
@@ -42,7 +42,8 @@ For reference, fully expanding these terms gives the equation
 &-k \cdot \frac{3U_{j}^n\left(U_{j+1}^n-U_{j-1}^n\right)}{2h} +k \cdot \frac{U_{j}^n\left(U_{j+2}^n-2U_{j+1}^n+2U_{j-1}^n-U_{j-2}^n\right)}{2h^{3}} + U_{j}^n.\\
 \end{align*}
 
-\newpage
+
+\section*{Forward and backward differences for endpoints}
 The equations with forward differences in space for the endpoints:
 
 \begin{align*}
