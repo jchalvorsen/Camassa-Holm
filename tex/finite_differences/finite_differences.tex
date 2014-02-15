@@ -24,25 +24,26 @@ u_t &\approx \Delta_t U_j^n = \frac{U_{j}^{n+1} - U_{j}^{n}}{k} \\
 u_x &\approx \delta_x U_j^n = \frac{U_{j+1}^n - U_{j-1}^n}{2h} \\
 u_{xx} &\approx \delta_x^2 U_j^n = \frac{U_{j+1}^n - 2U_j^n + U_{j-1}^n}{h^2} \\
 u_{xxx} &\approx \delta_x^3 U_j^n = \frac{U_{j+2}^n - 2U_{j+1}^n + 2U_{j-1}^n - U_{j-2}^n}{2h^3} \\
-u_{xxt} &\approx \Delta_t \delta_x^2 U_j^n = \frac{(U_{j+1}^{n+1} - U_{j+1}^n) - 2(U_j^{n+1} - U_j^n) + (U_{j-1}^{n+1} - U_{j-1}^n)}{h^3}
+u_{xxt} &\approx \Delta_t \delta_x^2 U_j^n = \frac{(U_{j+1}^{n+1} - U_{j+1}^n) - 2(U_j^{n+1} - U_j^n) + (U_{j-1}^{n+1} - U_{j-1}^n)}{kh^2}
 \end{align}
 
 Using these differences, we may obtain the following equation, where unknown terms (next time step) are collected on the left hand side:
 
 \begin{align*}
-U_j^{n+1} - \frac{k}{h} \delta^2 U_j^{n+1} &= \frac{k}{h} \delta^2 U_j^n + 2k\delta U_j^n \cdot \delta ^2U_j^n - 3 k U_j^n \cdot \delta U_j^n + k U_j^n \delta^3 U_j^n + U_j^n \\
-&= k \delta^2 U_j^n \left( \frac{1}{h} + 2 \delta U_j^n \right) + U_j^n \left(1 + k \delta^3 U_j^n - 3 k \delta U_j^n \right).
+U_j^{n+1} - \delta^2 U_j^{n+1} &= \delta^2 U_j^n + 2k\delta U_j^n \cdot \delta ^2U_j^n - 3 k U_j^n \cdot \delta U_j^n + k U_j^n \delta^3 U_j^n + U_j^n \\
+&= \delta^2 U_j^n \left( 1 + 2k \delta U_j^n \right) + U_j^n \left(1 + k \delta^3 U_j^n - 3 k \delta U_j^n \right).
 \end{align*}
 
 For reference, fully expanding these terms gives the equation
 
 \begin{align*}
-&\frac{U_{j}^{n+1}}{k} - \frac{U_{j+1}^{n+1}-2U_{j}^{n+1}+U_{j-1}^{n+1}}{h^{3}} = \\
-&\frac{U_{j+1}^n - 2U_j^n + U_{j-1}^n}{h^2} +\frac{\left(U_{j+1}^n-U_{j-1}^n\right)\left(U_{j+1}^n-2U_{j}^n-U_{j-1}^n\right)}{h^{3}}\\
-&-\frac{3U_{j}^n\left(U_{j+1}^n-U_{j-1}^n\right)}{2h} +\frac{U_{j}^n\left(U_{j+2}^n-2U_{j+1}^n+2U_{j-1}^n-U_{j-2}^n\right)}{2h^{3}} +\frac{U_{j}^n}{k}.\\
+&U_{j}^{n+1} - \frac{U_{j+1}^{n+1}-2U_{j}^{n+1}+U_{j-1}^{n+1}}{h^{2}} = \\
+&\frac{U_{j+1}^n - 2U_j^n + U_{j-1}^n}{h^2} +k \cdot \frac{\left(U_{j+1}^n - U_{j-1}^n\right)\left(U_{j+1}^n-2U_{j}^n-U_{j-1}^n\right)}{h^{3}}\\
+&-k \cdot \frac{3U_{j}^n\left(U_{j+1}^n-U_{j-1}^n\right)}{2h} +k \cdot \frac{U_{j}^n\left(U_{j+2}^n-2U_{j+1}^n+2U_{j-1}^n-U_{j-2}^n\right)}{2h^{3}} + U_{j}^n.\\
 \end{align*}
 
-\newpage
+
+\section*{Forward and backward differences for endpoints}
 The equations with forward differences in space for the endpoints:
 
 \begin{align*}
