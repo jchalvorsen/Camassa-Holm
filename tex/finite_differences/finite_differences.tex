@@ -1,0 +1,27 @@
+\documentclass{article}
+\usepackage{amsmath}
+\begin{document}
+
+\title{List of finite differences for use in finite difference calculations}
+\maketitle
+
+\section*{The Camassa-Holm equation}
+The finite differences listed in this document pertains to the following equation, known as the Camassa-Holm equation (note: stationary reference frame):
+
+\begin{equation}
+\label{eq:camassa-holm}
+u_t + 3uu_x - 2u_xu_{xx} - uu_{xxx} - u_{xxt} = 0
+\end{equation}
+
+\section*{Central in space, forward in time}
+The following are the finite differences for equation \eqref{eq:camassa-holm}, using central differences in space, forward in time.
+
+\begin{align}
+U_t &= \frac{U_{j}^{n+1} - U_{j}^{n}}{k} \\
+U_x &= \frac{U_{j+1}^n - U_{j-1}^n}{2h} \\
+U_{xx} &= \frac{U_{j+1}^n - 2U_j^n + U_{j-1}^n}{h^2} \\
+U_{xxx} &= \frac{U_{j+2}^n - 2U_{j+1}^n + 2U_{j-1}^n - U_{j-2}^n}{2h^3} \\
+U_{xxt} &= \frac{(U_{j+1}^{n+1} - U_{j+1}^n) - 2(U_j^{n+1} - U_j^n) + (U_{j-1}^{n+1} - U_{j-1}^n)}{h^3}
+\end{align}
+
+\end{document}
