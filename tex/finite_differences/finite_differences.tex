@@ -42,5 +42,24 @@ For reference, fully expanding these terms gives the equation
 &-\frac{3U_{j}^n\left(U_{j+1}^n-U_{j-1}^n\right)}{2h} +\frac{U_{j}^n\left(U_{j+2}^n-2U_{j+1}^n+2U_{j-1}^n-U_{j-2}^n\right)}{2h^{3}} +\frac{U_{j}^n}{k}.\\
 \end{align*}
 
+\newpage
+The equations with forward differences in space for the endpoints:
+
+\begin{align*}
+u_x &\approx \frac{-\frac{3}{2}U_j^n+2U_{j+1}^n-\frac{1}{2}U_{j+2}^n}{h} \\
+u_{xx} &\approx \frac{2U_j^n-5U_{j+1}^n+4U_{j+2}^n-U_{j+3}^n}{h^{2}} \\
+u_{xxx} &\approx \frac{-\frac{5}{2}U_j^n+9U_{j+1}^n-12U_{j+2}^n+7U_{j+3}^n-\frac{3}{2}U_{j+4}^n}{h^{3}} \\
+u_{xxt} &\approx \frac{2\left(U_j^{n+1}U_j^n\right)-5\left(U_{j+1}^{n+1}-U_{j+1}^{n}\right)+4\left(U_{j+2}^{n+1}-U_{j+2}^n\right)-\left(U_{j+3}^{n+1}-U_{j+3}^n\right)}{h^{2}k} \\
+\end{align*}
+
+The equations with backward differences in space for the endpoints:
+
+\begin{align*}
+u_x &\approx \frac{\frac{3}{2}U_j^n-2U_{j+1}^n+\frac{1}{2}U_{j+2}^n}{h} \\
+u_{xx} &\approx \frac{2U_j^n-5U_{j+1}^n+4U_{j+2}^n-U_{j+3}^n}{h^{2}} \\
+u_{xxx} &\approx \frac{\frac{5}{2}U_j^n-9U_{j+1}^n+12U_{j+2}^n-7U_{j+3}^n+\frac{3}{2}U_{j+4}^n}{h^{3}} \\
+u_{xxt} &\approx \frac{2\left(U_j^{n+1}U_j^n\right)-5\left(U_{j+1}^{n+1}-U_{j+1}^{n}\right)+4\left(U_{j+2}^{n+1}-U_{j+2}^n\right)-\left(U_{j+3}^{n+1}-U_{j+3}^n\right)}{h^{2}k} \\
+\end{align*}
+
 
 \end{document}
