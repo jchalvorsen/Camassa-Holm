@@ -30,7 +30,7 @@ end
 
 figure
 shading flat;
-contourf(x,t,U)
+surf(x,t,U)
 view(140, 30)
 set(gca,'FontSize',15)
 xlabel('space x')

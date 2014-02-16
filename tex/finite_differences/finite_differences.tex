@@ -1,8 +1,8 @@
-\documentclass{article}
+\documentclass[fleqn]{article}
 \usepackage{amsmath}
 \begin{document}
 
-\title{List of finite differences for use in finite difference calculations}
+\title{Finite differences for numerical approximation of the Camassa-Holm equations}
 \maketitle
 
 \section*{The Camassa-Holm equation}
@@ -13,15 +13,54 @@ The finite differences listed in this document pertains to the following equatio
 u_t + 3uu_x - 2u_xu_{xx} - uu_{xxx} - u_{xxt} = 0
 \end{equation}
 
+\section*{Notation}
+Let $\Delta$ denote forward difference, $\nabla$ denote backward difference and $\delta$ denote central difference. For instance, $\delta_t^N U_j^n$ denotes the $N$-th order central difference for $U_j^n$ with regards to $t$, the time variable.
+
 \section*{Central in space, forward in time}
 The following are the finite differences for equation \eqref{eq:camassa-holm}, using central differences in space, forward in time.
 
 \begin{align}
-U_t &= \frac{U_{j}^{n+1} - U_{j}^{n}}{k} \\
-U_x &= \frac{U_{j+1}^n - U_{j-1}^n}{2h} \\
-U_{xx} &= \frac{U_{j+1}^n - 2U_j^n + U_{j-1}^n}{h^2} \\
-U_{xxx} &= \frac{U_{j+2}^n - 2U_{j+1}^n + 2U_{j-1}^n - U_{j-2}^n}{2h^3} \\
-U_{xxt} &= \frac{(U_{j+1}^{n+1} - U_{j+1}^n) - 2(U_j^{n+1} - U_j^n) + (U_{j-1}^{n+1} - U_{j-1}^n)}{h^3}
+u_t &\approx \Delta_t U_j^n = \frac{U_{j}^{n+1} - U_{j}^{n}}{k} \\
+u_x &\approx \delta_x U_j^n = \frac{U_{j+1}^n - U_{j-1}^n}{2h} \\
+u_{xx} &\approx \delta_x^2 U_j^n = \frac{U_{j+1}^n - 2U_j^n + U_{j-1}^n}{h^2} \\
+u_{xxx} &\approx \delta_x^3 U_j^n = \frac{U_{j+2}^n - 2U_{j+1}^n + 2U_{j-1}^n - U_{j-2}^n}{2h^3} \\
+u_{xxt} &\approx \Delta_t \delta_x^2 U_j^n = \frac{(U_{j+1}^{n+1} - U_{j+1}^n) - 2(U_j^{n+1} - U_j^n) + (U_{j-1}^{n+1} - U_{j-1}^n)}{kh^2}
 \end{align}
+
+Using these differences, we may obtain the following equation, where unknown terms (next time step) are collected on the left hand side:
+
+\begin{align*}
+U_j^{n+1} - \delta^2 U_j^{n+1} &= \delta^2 U_j^n + 2k\delta U_j^n \cdot \delta ^2U_j^n - 3 k U_j^n \cdot \delta U_j^n + k U_j^n \delta^3 U_j^n + U_j^n \\
+&= \delta^2 U_j^n \left( 1 + 2k \delta U_j^n \right) + U_j^n \left(1 + k \delta^3 U_j^n - 3 k \delta U_j^n \right).
+\end{align*}
+
+For reference, fully expanding these terms gives the equation
+
+\begin{align*}
+&U_{j}^{n+1} - \frac{U_{j+1}^{n+1}-2U_{j}^{n+1}+U_{j-1}^{n+1}}{h^{2}} = \\
+&\frac{U_{j+1}^n - 2U_j^n + U_{j-1}^n}{h^2} +k \cdot \frac{\left(U_{j+1}^n - U_{j-1}^n\right)\left(U_{j+1}^n-2U_{j}^n-U_{j-1}^n\right)}{h^{3}}\\
+&-k \cdot \frac{3U_{j}^n\left(U_{j+1}^n-U_{j-1}^n\right)}{2h} +k \cdot \frac{U_{j}^n\left(U_{j+2}^n-2U_{j+1}^n+2U_{j-1}^n-U_{j-2}^n\right)}{2h^{3}} + U_{j}^n.\\
+\end{align*}
+
+
+\section*{Forward and backward differences for endpoints}
+The equations with forward differences in space for the endpoints:
+
+\begin{align*}
+u_x &\approx \frac{-\frac{3}{2}U_j^n+2U_{j+1}^n-\frac{1}{2}U_{j+2}^n}{h} \\
+u_{xx} &\approx \frac{2U_j^n-5U_{j+1}^n+4U_{j+2}^n-U_{j+3}^n}{h^{2}} \\
+u_{xxx} &\approx \frac{-\frac{5}{2}U_j^n+9U_{j+1}^n-12U_{j+2}^n+7U_{j+3}^n-\frac{3}{2}U_{j+4}^n}{h^{3}} \\
+u_{xxt} &\approx \frac{2\left(U_j^{n+1}U_j^n\right)-5\left(U_{j+1}^{n+1}-U_{j+1}^{n}\right)+4\left(U_{j+2}^{n+1}-U_{j+2}^n\right)-\left(U_{j+3}^{n+1}-U_{j+3}^n\right)}{h^{2}k} \\
+\end{align*}
+
+The equations with backward differences in space for the endpoints:
+
+\begin{align*}
+u_x &\approx \frac{\frac{3}{2}U_j^n-2U_{j+1}^n+\frac{1}{2}U_{j+2}^n}{h} \\
+u_{xx} &\approx \frac{2U_j^n-5U_{j+1}^n+4U_{j+2}^n-U_{j+3}^n}{h^{2}} \\
+u_{xxx} &\approx \frac{\frac{5}{2}U_j^n-9U_{j+1}^n+12U_{j+2}^n-7U_{j+3}^n+\frac{3}{2}U_{j+4}^n}{h^{3}} \\
+u_{xxt} &\approx \frac{2\left(U_j^{n+1}U_j^n\right)-5\left(U_{j+1}^{n+1}-U_{j+1}^{n}\right)+4\left(U_{j+2}^{n+1}-U_{j+2}^n\right)-\left(U_{j+3}^{n+1}-U_{j+3}^n\right)}{h^{2}k} \\
+\end{align*}
+
 
 \end{document}
