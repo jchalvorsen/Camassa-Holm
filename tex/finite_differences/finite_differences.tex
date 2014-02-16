@@ -24,7 +24,8 @@ u_t &\approx \Delta_t U_j^n = \frac{U_{j}^{n+1} - U_{j}^{n}}{k} \\
 u_x &\approx \delta_x U_j^n = \frac{U_{j+1}^n - U_{j-1}^n}{2h} \\
 u_{xx} &\approx \delta_x^2 U_j^n = \frac{U_{j+1}^n - 2U_j^n + U_{j-1}^n}{h^2} \\
 u_{xxx} &\approx \delta_x^3 U_j^n = \frac{U_{j+2}^n - 2U_{j+1}^n + 2U_{j-1}^n - U_{j-2}^n}{2h^3} \\
-u_{xxt} &\approx \Delta_t \delta_x^2 U_j^n = \frac{(U_{j+1}^{n+1} - U_{j+1}^n) - 2(U_j^{n+1} - U_j^n) + (U_{j-1}^{n+1} - U_{j-1}^n)}{kh^2}
+u_{xxt} &\approx \Delta_t \delta_x^2 U_j^n = \frac{(U_{j+1}^{n+1} - U_{j+1}^n) - 2(U_j^{n+1} - U_j^n) + (U_{j-1}^{n+1} - U_{j-1}^n)}{kh^2} \\
+ &= \frac{1}{k} \left(\delta_x^2 U_j^{n+1} - \delta_x^2 U_j^n\right)
 \end{align}
 
 Using these differences, we may obtain the following equation, where unknown terms (next time step) are collected on the left hand side:
