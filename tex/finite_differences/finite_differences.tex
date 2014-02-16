@@ -35,14 +35,6 @@ U_j^{n+1} - \delta^2 U_j^{n+1} &= \delta^2 U_j^n + 2k\delta U_j^n \cdot \delta ^
 &= \delta^2 U_j^n \left( 1 + 2k \delta U_j^n \right) + U_j^n \left(1 + k \delta^3 U_j^n - 3 k \delta U_j^n \right).
 \end{align*}
 
-For reference, fully expanding these terms gives the equation
-
-\begin{align*}
-&U_{j}^{n+1} - \frac{U_{j+1}^{n+1}-2U_{j}^{n+1}+U_{j-1}^{n+1}}{h^{2}} = \\
-&\frac{U_{j+1}^n - 2U_j^n + U_{j-1}^n}{h^2} +k \cdot \frac{\left(U_{j+1}^n - U_{j-1}^n\right)\left(U_{j+1}^n-2U_{j}^n-U_{j-1}^n\right)}{h^{3}}\\
-&-k \cdot \frac{3U_{j}^n\left(U_{j+1}^n-U_{j-1}^n\right)}{2h} +k \cdot \frac{U_{j}^n\left(U_{j+2}^n-2U_{j+1}^n+2U_{j-1}^n-U_{j-2}^n\right)}{2h^{3}} + U_{j}^n.\\
-\end{align*}
-
 
 \section*{Forward and backward differences for endpoints}
 The equations with forward differences in space for the endpoints:
