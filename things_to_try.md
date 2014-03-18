@@ -5,3 +5,9 @@ Things to try
 3. Using forward and backward differences to find values at the endpoints.
 4. Implement reference solution, based on proposed schemes in literature.
 5. Math, math, math.
+
+
+
+Stabilitet
+Konvergens (Numerisk + Analytisk)
+Forbedre kode
