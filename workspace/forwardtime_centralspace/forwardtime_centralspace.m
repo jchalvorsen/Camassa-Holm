@@ -1,17 +1,20 @@
 function [] = forwardtime_centralspace()
 
 %% Configuration
-M = 256;
-xmin = 0;
-xmax = 4;
-tmax = 0.1;
+M = 128;
+xmin = -30;
+xmax = 30;
+tmax = 400;
 
 % Initial condition
-g = @(x) exp(-abs(x-2));
+g = @(x) exp(-abs(x-2)) + exp(-abs(x-4));
+g = @(x) exp(-(x-2).^2);
+%g = @(x) 10 ./ ((3 + abs(x)) .^ 2);
+%g = @(x) abs(x) ./ max(x);
 
 %% Preparation
 h = (xmax - xmin) / (M - 1)
-k = h^2
+k = h^2%min(tmax / 100, h^2)
 
 X = xmin:h:xmax;
 T = [0, k:k:tmax ];
@@ -26,26 +29,31 @@ for n = 1:length(T) - 1
     row = U(n, :);
     
     % Calculate the difference terms of the right hand side
-    d = central([row(end), row, row(1)], h);
-    d2 = central2([row(end), row, row(1)], h);
-    d3 = central3([row(end-1:end), row, row(1:2)], h);
+    d = central([row(end-1), row, row(2)], h);
+    d2 = central2([row(end-1), row, row(2)], h);
+    d3 = central3([row(end-2:end-1), row, row(2:3)], h);
 
     % Solve the system of equations
-    A = build_matrix(M, h);
-    F = transpose(d2 .* (1 + 2 * d) + row .* (1 + k * d3 - 3 * k * d));
+    A = build_matrix(length(X), h);
+    F = transpose(row - d2 + (k * d2 .* (2 * d)) + k * row .* (d3 - 3 * d));
     U(n + 1, :) = A \ F;
+    
+    % Scale
+%     U(n + 1, :) = (U(n + 1, :) - min(U(n + 1, :)));
+%     U(n + 1, :) = U(n + 1, :) / max(U(n + 1, :));
+    
 end
 
+figure
 plot(X, g(X))
 
-figure
-animated_plot(X, U, 0.1)
-
+animated_plot(X, U, 0.05)
+ 
 % figure;
 % surf(X, T, U)
+% shading flat;
 % xlabel('x')
 % ylabel('t')
-% shading flat;
 
 end
 
@@ -74,7 +82,7 @@ figure
 y = U(1, :);
 h = plot(x, y);
 xlim([min(x), max(x)])
-ylim([max(min(U)), min(max(U))])
+ylim([min(U(1, :)), 2 * max(U(1, :))]);
 pause(step)
 for i = 2:size(U, 1)
     y = U(i, :);
