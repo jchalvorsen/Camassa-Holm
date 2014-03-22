@@ -1,30 +1,35 @@
 function [ U ] = holdenraynaud()
 
 %% Configuration
-% Amount of points along the X-axis
+% Spatial resolution
 N = 512;
 % Domain of x
 xmin = 0;
 xmax = 1;
 % Maximum time value
-T = 2000;
+T = 1;
 % Initial condition (as a function of x)
-%initial = @(x) exp(-abs(x - 0.5));
+a = 1 / (xmax - xmin);  
+initial = @(x) cosh(min(x, a - x)) / sinh(a / 2);
 
 % Compression settings
 % nx = number of x values in compressed matrix
-nx = 100;
+nx = 80;
 % nt = number of t values in compressed matrix
 nt = 500;
 
 %% Preparation
-% Step in space dimension
+% Spatial step size
 h = 1 / N * (xmax - xmin);
-% Step in time dimension
-k = 0.9;% min(h, 1 / h)
 
 % X values in grid
 x = (0:N - 1) * h;
+
+% Determine temporal step size. Use the CFL condition and assume
+% the maxmimum size of the initial data is equal to the velocity of the
+% wave (assuming it is a wave).
+k = h / max(abs(initial(x)));
+
 % t values in grid
 t = 0:k:T;
 
@@ -36,8 +41,6 @@ kappa = log( (1 + 2 * N^2 + sqrt(1 + 4*N^2)) / (2 * N ^ 2));
 c = 1 / (1 + 2 * N^2 * (1 - exp(-kappa)));
 I = 0:N - 1;
 g = c * (exp(-kappa * I) + exp(kappa * (I - N))) / (1 - exp(-kappa * N));
-a = 1;  
-initial = @(x) c * cosh(min(x, a - x)) / sinh(a / 2);
 
 % Allocate solution U
 U = zeros(M, N);
@@ -86,7 +89,7 @@ fprintf('Spent %4.2f seconds on compressing solution before plotting.\n', ...
 %% Plotting
 
 figure
-mesh(xcomp, tcomp, Z)
+%surf(xcomp, tcomp, Z)
 shading flat;
 animatedplot(xcomp, tcomp, Z)
 xlabel('x')
