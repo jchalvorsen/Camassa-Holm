@@ -2,39 +2,50 @@ function [ U ] = holdenraynaud()
 
 %% Configuration
 % Spatial resolution
-N = 512;
+N = 4096;
 % Domain of x
 xmin = 0;
 xmax = 1;
 % Maximum time value
-T = 1;
+T = 10;
 % Initial condition (as a function of x)
-a = 1 / (xmax - xmin);  
-initial = @(x) cosh(min(x, a - x)) / sinh(a / 2);
+a = xmax - xmin;
+%initial = @(x) 5 * cosh(min(x, a - x));
+initial = @(x) cosh(min(x, a - x)) + circshift(0.5 * cosh(min(x, a - x)), repmat(round(length(x) / 3), length(x), 1));
+%initial = @(x) 0.1 * exp(- abs(x - 0.5));
+%initial = @(x) cosh(2 * abs(x) - 1) / (2 * sinh(1));
+%initial = @(x) cosh(min(x, a - x) - 0.5) / sinh(a / 2) + cosh(min(x, a - x)) / sinh(a / 2);
 
 % Compression settings
 % nx = number of x values in compressed matrix
-nx = 80;
+nx = 100;
 % nt = number of t values in compressed matrix
-nt = 500;
+nt = 600;
 
 %% Preparation
 % Spatial step size
 h = 1 / N * (xmax - xmin);
 
 % X values in grid
-x = (0:N - 1) * h;
+x = xmin + (0:N - 1) * h;
+
+% Find peaks in initial data
+peaks = findpeaks(initial(x));
 
 % Determine temporal step size. Use the CFL condition and assume
 % the maxmimum size of the initial data is equal to the velocity of the
 % wave (assuming it is a wave).
-k = h / max(abs(initial(x)));
+k = h / abs(sum(peaks));
 
 % t values in grid
 t = 0:k:T;
 
 % Amount of time values
 M = length(t);
+
+% Don't expand matrix if result matrix is smaller
+nx = min(nx, N);
+nt = min(nt, M);
 
 % Determine g
 kappa = log( (1 + 2 * N^2 + sqrt(1 + 4*N^2)) / (2 * N ^ 2));
@@ -87,9 +98,9 @@ fprintf('Spent %4.2f seconds on compressing solution before plotting.\n', ...
     compresselapsed);
 
 %% Plotting
-
+pause
 figure
-%surf(xcomp, tcomp, Z)
+surf(xcomp, tcomp, Z)
 shading flat;
 animatedplot(xcomp, tcomp, Z)
 xlabel('x')
