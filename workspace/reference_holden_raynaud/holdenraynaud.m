@@ -2,28 +2,30 @@ function [ U ] = holdenraynaud()
 
 %% Configuration
 % Spatial resolution
-N = 512;
+N = 128;
 % Domain of x
 xmin = 0;
 xmax = 1;
 % Maximum time value
-T = 1;
+T = 5;
 % Initial condition (as a function of x)
-a = 1 / (xmax - xmin);  
+a = xmax - xmin;
 initial = @(x) cosh(min(x, a - x)) / sinh(a / 2);
+%initial = @(x) cosh(2 * abs(x) - 1) / (2 * sinh(1));
+%initial = @(x) cosh(min(x, a - x) - 0.5) / sinh(a / 2) + cosh(min(x, a - x)) / sinh(a / 2);
 
 % Compression settings
 % nx = number of x values in compressed matrix
-nx = 80;
+nx = 200;
 % nt = number of t values in compressed matrix
-nt = 500;
+nt = 1000;
 
 %% Preparation
 % Spatial step size
 h = 1 / N * (xmax - xmin);
 
 % X values in grid
-x = (0:N - 1) * h;
+x = xmin + (0:N - 1) * h;
 
 % Determine temporal step size. Use the CFL condition and assume
 % the maxmimum size of the initial data is equal to the velocity of the
@@ -89,7 +91,7 @@ fprintf('Spent %4.2f seconds on compressing solution before plotting.\n', ...
 %% Plotting
 
 figure
-%surf(xcomp, tcomp, Z)
+surf(xcomp, tcomp, Z)
 shading flat;
 animatedplot(xcomp, tcomp, Z)
 xlabel('x')
