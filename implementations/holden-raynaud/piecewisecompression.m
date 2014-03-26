@@ -20,7 +20,7 @@ clear path;
 
 %% Configuration
 % Spatial resolution (number of points along the x-axis)
-N = 512;
+N = 1024;
 
 % Solve for the total duration [0, T]
 T = 10;
@@ -45,9 +45,14 @@ nsteps = ceil(T / S);
 cx = [];
 ct = [];
 
+ptext = @(i) sprintf('Solving Camassa-Holm... Piece %d of %d completed.', i, nsteps);
+w = waitbar(0, ptext(0));
+
 %% Execution
 for i = 1:nsteps
-   [U, x, t] = holdenraynaud(N, S, initial);
+   [U, x, t] = holdenraynaud(N, S, initial, ...
+       'ShowProgress', false, 'PrintTiming', false);
+   
    [V, vx, vt] = compress(x, t, U, nx, nt);
    Z = [Z(1:end - 1, :); V];
    
@@ -61,7 +66,11 @@ for i = 1:nsteps
    
    % Redefine initial to use last value in U
    initial = @(x) U(end, :);
+   
+   waitbar(i / nsteps, w , ptext(i));
 end
+
+close(w);
 
 % Compress the resulting matrix
 [C, Cx, Ct] = compress(cx, ct, Z, nx, nt);

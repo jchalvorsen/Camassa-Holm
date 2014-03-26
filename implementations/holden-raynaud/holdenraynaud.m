@@ -1,4 +1,6 @@
-function [ U, x, t ] = holdenraynaud(N, T, initial)
+function [ U, x, t ] = holdenraynaud(N, T, initial, varargin)
+
+[ showprogress, printtiming ] = parse(varargin);
 
 %% Configuration
 % Domain of x. Note that this is currently locked to [0, 1], but
@@ -41,7 +43,9 @@ U(1, :) = initial(x);
 % Time solution evaluation run time
 ticstart = tic;
 progress = 0;
-w = waitbar(progress, 'Solving Camassa-Holm...');
+if showprogress
+    w = waitbar(progress, 'Solving Camassa-Holm...');
+end
 
 %% Execution
 for i = 1:M - 1
@@ -63,12 +67,19 @@ for i = 1:M - 1
     % Transform mnext back to u
     U(i + 1, :) = ifft(fft(g) .* fft(mnext));
     
-    updateProgress( (i + 1) / (M) );
+    if showprogress
+        updateProgress( (i + 1) / (M) );
+    end
 end
 
 elapsed = toc(ticstart);
-fprintf('Spent %4.2f seconds on solving equation.\n', elapsed);
-close(w);
+if printtiming
+    fprintf('Spent %4.2f seconds on solving equation.\n', elapsed);
+end
+
+if showprogress
+    close(w);
+end
 
     function [] = updateProgress(fraction)
         if (fraction - progress >= 0.05 || progress >= 1.0)
@@ -76,7 +87,6 @@ close(w);
             waitbar(fraction, w);
         end
     end
-
 end
 
 function [ Y ] = fbdiff(X, h)
@@ -87,4 +97,33 @@ end
 function [ Y ] = D(X, h)
 % Average of forward and backward difference
 Y =  (X(3:end) - X(1:end - 2))/ (2 * h);
+end
+
+function [ showprogress, printtiming ] = parse(options)
+% Parses additional options to holdenraynaud
+
+% Set default values for options
+showprogress = true;
+printtiming = true;
+
+count = length(options);
+for k = 1:2:count
+    parameter = lower(options{k});
+    missingMessage = strcat('Missing parameter value for parameter ''', ...
+        parameter, '''.');
+    assert(k + 1 <= count, missingMessage);
+    
+    value = options{k + 1};
+    assert(~isempty(value), missingMessage);
+    assert(islogical(value), strcat('Parameter value for parameter ''', ...
+        parameter, ''' is not logical (true/false).'));
+    
+    % Note: Lower-case for case insensitivity
+    switch parameter
+        case 'showprogress'
+            showprogress = value;
+        case 'printtiming'
+            printtiming = value;
+    end
+end
 end

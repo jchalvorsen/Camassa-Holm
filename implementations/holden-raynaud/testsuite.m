@@ -9,9 +9,9 @@ clear path;
 
 %% Configuration
 % Spatial resolution
-N = 16000;
+N = 1024;
 % Maximum time value
-T = 2;
+T = 15;
 
 % Compression settings
 % nx = number of x values in compressed matrix
