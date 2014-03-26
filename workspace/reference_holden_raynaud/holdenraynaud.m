@@ -2,7 +2,7 @@ function [ U ] = holdenraynaud()
 
 %% Configuration
 % Spatial resolution
-N = 4096;
+N = 128;
 % Domain of x
 xmin = 0;
 xmax = 1;
@@ -10,8 +10,8 @@ xmax = 1;
 T = 10;
 % Initial condition (as a function of x)
 a = xmax - xmin;
-%initial = @(x) 5 * cosh(min(x, a - x));
-initial = @(x) cosh(min(x, a - x)) + circshift(0.5 * cosh(min(x, a - x)), repmat(round(length(x) / 3), length(x), 1));
+initial = @(x) cosh(min(x, a - x));
+%initial = @(x) cosh(min(x, a - x)) + circshift(0.5 * cosh(min(x, a - x)), repmat(round(length(x) / 3), length(x), 1));
 %initial = @(x) 0.1 * exp(- abs(x - 0.5));
 %initial = @(x) cosh(2 * abs(x) - 1) / (2 * sinh(1));
 %initial = @(x) cosh(min(x, a - x) - 0.5) / sinh(a / 2) + cosh(min(x, a - x)) / sinh(a / 2);
@@ -33,7 +33,7 @@ x = xmin + (0:N - 1) * h;
 peaks = findpeaks(initial(x));
 
 % Determine temporal step size. Use the CFL condition and assume
-% the maxmimum size of the initial data is equal to the velocity of the
+% the sum of the peaks of the initial data is equal to the velocity of the
 % wave (assuming it is a wave).
 k = h / abs(sum(peaks));
 
