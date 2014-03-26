@@ -20,13 +20,13 @@ clear path;
 
 %% Configuration
 % Spatial resolution (number of points along the x-axis)
-N = 1000;
+N = 512;
 
 % Solve for the total duration [0, T]
 T = 10;
 
 % Stepsize
-S = 0.1;
+S = 1;
 
 % Compression settings
 nx = 200;
@@ -35,7 +35,8 @@ nt = 1000;
 %% Initial condition (as a function of x)
 a = 1;
 %initial = @(x) cosh(min(x, a - x));
-initial = @(x) cosh(min(x, a - x)) + circshift(0.5 * cosh(min(x, a - x)), repmat(round(length(x) / 3), length(x), 1));
+initial = @(x) cosh(min(x, a - x)) + ...
+    circshift(0.5 * cosh(min(x, a - x)), repmat(round(length(x) / 3), length(x), 1));
 
 %% Preparation
 Z = zeros(0, 0);
@@ -48,12 +49,12 @@ ct = [];
 for i = 1:nsteps
    [U, x, t] = holdenraynaud(N, S, initial);
    [V, vx, vt] = compress(x, t, U, nx, nt);
-   Z = [Z; V];
+   Z = [Z(1:end - 1, :); V];
    
    cx = vx;
    
    if ~isempty(ct)
-        ct = [ct, (ct(end) + vt)];
+        ct = [ct, (ct(end) + vt(2:end))];
    else
         ct = vt;
    end
@@ -62,5 +63,7 @@ for i = 1:nsteps
    initial = @(x) U(end, :);
 end
 
-animatedplot(cx, ct, Z);
+% Compress the resulting matrix
+[C, Cx, Ct] = compress(cx, ct, Z, nx, nt);
+animatedplot(Cx, Ct, Z);
 
