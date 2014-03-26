@@ -46,9 +46,10 @@ cx = [];
 ct = [];
 
 ptext = @(i) sprintf('Solving Camassa-Holm... Piece %d of %d completed.', i, nsteps);
-w = waitbar(0, ptext(0));
 
 %% Execution
+w = waitbar(0, ptext(0));
+
 for i = 1:nsteps
    [U, x, t] = holdenraynaud(N, S, initial, ...
        'ShowProgress', false, 'PrintTiming', false);

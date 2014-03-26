@@ -30,7 +30,7 @@ t = 0:k:T;
 % Amount of time values
 M = length(t);
 
-% Determine g
+% Determine g (see paper by Holden, Raynaud)
 kappa = log( (1 + 2 * N^2 + sqrt(1 + 4*N^2)) / (2 * N ^ 2));
 c = 1 / (1 + 2 * N^2 * (1 - exp(-kappa)));
 I = 0:N - 1;
@@ -89,6 +89,7 @@ end
     end
 end
 
+%% Finite differences
 function [ Y ] = fbdiff(X, h)
 % Forward, followed by backward finite difference
 Y = (X(1:end - 2) - 2 * X(2:end - 1) + X(3:end)) / (h^2);
@@ -99,6 +100,7 @@ function [ Y ] = D(X, h)
 Y =  (X(3:end) - X(1:end - 2))/ (2 * h);
 end
 
+%% Parameter parsing for holdenraynaud
 function [ showprogress, printtiming ] = parse(options)
 % Parses additional options to holdenraynaud
 
@@ -108,6 +110,7 @@ printtiming = true;
 
 count = length(options);
 for k = 1:2:count
+    % Sanity checks
     parameter = lower(options{k});
     missingMessage = strcat('Missing parameter value for parameter ''', ...
         parameter, '''.');
