@@ -1,13 +1,19 @@
-function [ U, x, t ] = holdenraynaud(N, T, initial, varargin)
+function [ U, x, t ] = holdenraynaud(N, T, xdomain, initial, varargin)
 
 [ showprogress, printtiming ] = parse(varargin);
+
+%% Sanity checks
+assert(isvector(xdomain), 'xdomain must be a vector.');
+assert(length(xdomain) == 2, 'xdomain must have length 2.');
+assert(xdomain(2) > xdomain(1), 'xdomain = [XMIN, XMAX] must have XMAX > XMIN');
+assert(N > 1, 'N must be greater than 1.');
 
 %% Configuration
 % Domain of x. Note that this is currently locked to [0, 1], but
 % hopefully this will be configurable. Worst-case, we transform it to [0,
 % 1] and then eventually back.
-xmin = 0;
-xmax = 1;
+xmin = xdomain(1);
+xmax = xdomain(2);
 
 %% Preparation
 % Spatial step size

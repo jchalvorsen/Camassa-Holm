@@ -51,7 +51,7 @@ ptext = @(i) sprintf('Solving Camassa-Holm... Piece %d of %d completed.', i, nst
 w = waitbar(0, ptext(0));
 
 for i = 1:nsteps
-   [U, x, t] = holdenraynaud(N, S, initial, ...
+   [U, x, t] = holdenraynaud(N, S, [0, 1], initial, ...
        'ShowProgress', false, 'PrintTiming', false);
    
    [V, vx, vt] = compress(x, t, U, nx, nt);

@@ -28,7 +28,7 @@ initial = @(x) cosh(min(x, a - x)) + circshift(0.5 * cosh(min(x, a - x)), repmat
 %initial = @(x) cosh(min(x, a - x) - 0.5) / sinh(a / 2) + cosh(min(x, a - x)) / sinh(a / 2);
 
 %% Solve equation
-[U, x, t] = holdenraynaud(N, T, initial);
+[U, x, t] = holdenraynaud(N, T, [0, 1], initial);
 M = size(U, 1);
 
 %% Compression
