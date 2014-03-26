@@ -71,7 +71,7 @@ fprintf('Spent %4.2f seconds on solving equation.\n', elapsed);
 close(w);
 
     function [] = updateProgress(fraction)
-        if (fraction > progress * 1.05)
+        if (fraction - progress >= 0.05 || progress >= 1.0)
             progress = fraction;
             waitbar(fraction, w);
         end
