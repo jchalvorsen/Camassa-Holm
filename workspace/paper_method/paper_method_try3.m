@@ -2,7 +2,7 @@ close all;
 clear all;
 tic
 x0 = @(x)  2*exp(-abs(x));
-%x0 = @(x) sin(pi*x);
+%x0 = @(x) sin(pi*x*30);
 %x0 = @(x)  2*exp(-abs(x)) + exp(-abs(x - 5));
 ref = @(x,t) 2*exp(-abs(x-2*t));
 %ref = @(x,t) 2*exp(-abs(x-2*t)) + exp(-abs(x-t -5));
@@ -13,10 +13,10 @@ xmin = -10;
 xmax = 20;
 
 L = 1000;
-T = 1;
+T = 4;
 dT = T/L;
 
-I = 7:2:13;
+I = 6:1:14;
 
 %errors = zeros(L,length(I));
 wait = waitbar(0,'Progress');
@@ -24,10 +24,11 @@ sol = figure;
 fault = figure;
 hold on
 col = jet(length(I));
+conv = zeros(length(I),1);
 for is = 1:length(I)
     n = 2^I(is);
     h = (xmax-xmin)/(n+1);
-    dT = h/2;
+    dT = h/8;
     L = floor(T/dT);
     x = xmin:h:xmax;
     u = x0(x);
@@ -49,12 +50,15 @@ for is = 1:length(I)
     
     errors = zeros(1,L);
     for i = 2:L
-        waitbar(((is-1)*L + i)/(L*length(I)));
-        % TEST OF NEW FORMAT
+        if mod(((is-1)*L + i)/(L*length(I))*100,5) == 0
+            waitbar(((is-1)*L + i)/(L*length(I)));
+        end
+        % TEST OF NEW FORMAT 
         u = u + dT * (A\((-B*((A*u')'.*u)')' - (A*u')'*C*u')')';
         refs = ref(x,(i-1)*dT);
         errors(i) = norm(refs-u,2)/(norm(refs,2));   
     end
+    conv(is) = errors(end)-errors(end-1);
     figure(sol)
     hold on
     plot(x,u,'color',col(is,:))
@@ -71,5 +75,10 @@ figure(fault)
 ylabel('relative fault')
 xlabel('timesteps')
 legend(cellstr(num2str((2.^I)')),'Location','NorthWest')
+
+figure
+loglog(2.^I,conv, 'b*-');
+hold on
+loglog(2.^I,fliplr(2.^(I))/100,'r*-')
 
 toc
