@@ -11,7 +11,7 @@ clear path;
 % Spatial resolution
 N = 4096;
 % Maximum time value
-T = 1;
+T = 5;
 
 xmin = 0;
 xmax = 1;
@@ -29,9 +29,9 @@ a = 1;
 %    repmat(cosh(min(x(floor(end / 2 + 1)), a - x(floor(end / 2 + 1)))), 1, ...
 %    length(x) - floor(length(x) / 2))] - ...
 %    cosh(min(x(floor(end / 2 + 1)), a - x(floor(end / 2 + 1))));
-%initial = @(x) cosh(min(x, a - x)) + circshift(0.5 * cosh(min(x, a - x)), ...
-%    repmat(round(length(x) / 2), length(x), 1));
-initial = @(x) exp(-5 * abs(x - 1.2)) + exp(-5 * abs(x - 0.2));
+initial = @(x) cosh(min(x, a - x)) + circshift(0.5 * cosh(min(x, a - x)), ...
+    repmat(round(length(x) / 2), length(x), 1));
+%initial = @(x) exp(-10 * abs(x - 1.2)) + exp(-10 * abs(x - 0.2));
 
 %% Solve equation
 [U, x, t] = holdenraynaud(N, T, [xmin, xmax], initial);

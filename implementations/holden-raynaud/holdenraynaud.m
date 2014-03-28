@@ -40,11 +40,12 @@ t = 0:k:T;
 % Amount of time values
 M = length(t);
 
-% Determine g (see paper by Holden, Raynaud)
+% Determine g (see paper by Holden, Raynaud), and pre-calculate fft(g)
 kappa = log( (1 + 2 * N^2 + sqrt(1 + 4*N^2)) / (2 * N ^ 2));
 c = 1 / (1 + 2 * N^2 * (1 - exp(-kappa)));
 I = 0:N - 1;
 g = c * (exp(-kappa * I) + exp(kappa * (I - N))) / (1 - exp(-kappa * N));
+fftg = fft(g);
 
 % Note: While the x domain can be any sensible domain on the real line,
 % we only work with the interval [0, 1]. Hence, we transform x to the
@@ -80,11 +81,13 @@ for i = 1:M - 1
     % Applying Euler's Method, we calculate the next "row" of m values
     mnext = m + k * mt;
     
-    % Transform mnext back to u
-    U(i + 1, :) = ifft(fft(g) .* fft(mnext));
+    % Transform mnext back to u by convolution
+    U(i + 1, :) = ifft(fftg .* fft(mnext));
     
     updateProgress( (i + 1) / (M) );
 end
+
+%% Exit
 
 elapsed = toc(ticstart);
 if printtiming
