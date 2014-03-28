@@ -7,78 +7,95 @@ x0 = @(x)  2*exp(-abs(x));
 ref = @(x,t) 2*exp(-abs(x-2*t));
 %ref = @(x,t) 2*exp(-abs(x-2*t)) + exp(-abs(x-t -5));
 
-%m0 = @(x) sech(x).^2;
 
+% initialising constants.
 xmin = -10;
 xmax = 20;
+T = 6;
+I = 7:1:11;
 
-L = 1000;
-T = 4;
-dT = T/L;
+% All these calculated from above
+M = length(I);
+N = 2.^I;
+H = (xmax-xmin)./N;
+K = H/4;
+L = floor(T./K);
+iterations = sum(L);
 
-I = 6:1:14;
-
-%errors = zeros(L,length(I));
-wait = waitbar(0,'Progress');
-sol = figure;
-fault = figure;
+wait = waitbar(0,'Launching nuclear missile');
+solution = figure;
+errornorms = figure;
 hold on
-col = jet(length(I));
-conv = zeros(length(I),1);
-for is = 1:length(I)
-    n = 2^I(is);
-    h = (xmax-xmin)/(n+1);
-    dT = h/8;
-    L = floor(T/dT);
-    x = xmin:h:xmax;
-    u = x0(x);
-    % testing matrix buildup:
-    % A is operator to go from u to m
-    e = ones(n+2,1);
-    A = spdiags([-e/h^2, (1 + 2/h^2) * e, -e/h^2], -1:1, n+2, n+2);
-    A(n+2,1) = -1/h^2;
-    A(1,n+2) = -1/h^2;
-    %u = (A\m0(x)')';
-    % B is backwards difference
-    B = spdiags([-e/h, e/h], -1:0, n+2, n+2);
-    B(1,n+2) = -1/h;
-
-    % C is central difference
-    C = spdiags([-e/(2*h), e/(2*h)], [-1, 1], n+2, n+2);
-    C(1,n+2) = -1/(2*h);
-    C(n+2,1) = 1/(2*h);
+color = jet(M);
+convergence = zeros(M,1);
+progress = 0;
+for i = 1:M
+    % for readability
+    n = N(i);
+    h = H(i);
+    k = K(i);
+    l = L(i);
     
-    errors = zeros(1,L);
-    for i = 2:L
-        if mod(((is-1)*L + i)/(L*length(I))*100,5) == 0
-            waitbar(((is-1)*L + i)/(L*length(I)));
+    x = xmin:h:xmax-h;
+    u = x0(x)';
+    
+    % A - operator to go from u to m
+    e = ones(n,1);
+    A = spdiags([-e/h^2, (1 + 2/h^2) * e, -e/h^2], -1:1, n, n);
+    A(n,1) = -1/h^2;
+    A(1,n) = -1/h^2;
+    
+    % B - backwards difference
+    B = spdiags([-e/h, e/h], -1:0, n, n);
+    B(1,n) = -1/h;
+
+    % C - central difference
+    C = spdiags([-e/(2*h), e/(2*h)], [-1, 1], n, n);
+    C(1,n) = -1/(2*h);
+    C(n,1) = 1/(2*h);
+    
+    errors = zeros(1,l);
+    for j = 1:l
+        % updating waitbar
+        if i > 1 && floor((L(i-1) + j)*100/iterations) > progress + 5;
+            progress = progress + 5;
+            waitbar(progress/100)
         end
-        % TEST OF NEW FORMAT 
-        u = u + dT * (A\((-B*((A*u')'.*u)')' - (A*u')'*C*u')')';
-        refs = ref(x,(i-1)*dT);
-        errors(i) = norm(refs-u,2)/(norm(refs,2));   
+        % TEST OF NEW FORMAT
+        m = A*u;
+        mt = m + k*(- B*(m.*u) - m.*(C*u) );
+        u = A\mt;
+        % Everythin in one operation below
+        %u = u + k * (A\((-B*((A*u).*u)) - (A*u).*(C*u)));
+        refs = ref(x,j*k)';
+        errors(j) = norm(refs-u,2)/(norm(refs,2));
+        %errors(j) = 2 - max(u);
     end
-    conv(is) = errors(end)-errors(end-1);
-    figure(sol)
+    
+    convergence(i) = errors(end) - errors(end-1);
+    figure(solution)
     hold on
-    plot(x,u,'color',col(is,:))
-    figure(fault)
+    plot(x,u,'color',color(i,:))
+    figure(errornorms)
     hold on
-    dots = linspace(0,100,L);
-    plot(dots,errors,'color',col(is,:))
+    dots = linspace(0,100,l);
+    plot(dots,errors,'color',color(i,:))
 end
-figure(sol)
-legend(cellstr(num2str((2.^I)')),'Location','NorthWest')
+figure(solution)
+legend(cellstr(num2str((N)')),'Location','NorthWest')
 plot(x,refs,'k')
 delete(wait)
-figure(fault)
+figure(errornorms)
 ylabel('relative fault')
 xlabel('timesteps')
-legend(cellstr(num2str((2.^I)')),'Location','NorthWest')
+legend(cellstr(num2str((N)')),'Location','NorthWest')
 
 figure
-loglog(2.^I,conv, 'b*-');
+plot(log(N),log(convergence), 'b*-')
 hold on
-loglog(2.^I,fliplr(2.^(I))/100,'r*-')
+plot(log(N),log(fliplr(N)) - max(log(N)) + max(log(convergence)),'r*-')
+%plot(log(N),log(fliplr(N.^2) - max(log(N.^2)) + max(log(convergence))),'g*-')
+legend('Rate of convergence','dy/dx = 1');
+
 
 toc
