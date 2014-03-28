@@ -9,21 +9,25 @@ assert(xdomain(2) > xdomain(1), 'xdomain = [XMIN, XMAX] must have XMAX > XMIN');
 assert(N > 1, 'N must be greater than 1.');
 
 %% Configuration
-% Domain of x. Note that this is currently locked to [0, 1], but
-% hopefully this will be configurable. Worst-case, we transform it to [0,
-% 1] and then eventually back.
+% Domain of x. 
 xmin = xdomain(1);
 xmax = xdomain(2);
 
 %% Preparation
 % Spatial step size
-h = 1 / N * (xmax - xmin);
+h = 1 / N;
 
-% X values in grid
-x = xmin + (0:N - 1) * h;
+% y and corresponding x values in grid
+y = (0:N - 1) * h;
+x = (xmax - xmin) * y + xmin;
 
-% Find peaks in initial data
-peaks = findpeaks(initial(x));
+% Generate initial data
+initialdata = initial(x);
+
+% Find peaks in initial data. Add boundaries if necessary
+peaks = findpeaks(initialdata);
+if initialdata(end) > initialdata(end - 1); peaks = [ peaks initialdata(end) ]; end
+if initialdata(1) > initialdata(2); peaks = [ I(1) initialdata ]; end
 
 % Determine temporal step size. Use the CFL condition and assume
 % the sum of the peaks of the initial data is equal to the velocity of the
@@ -42,9 +46,15 @@ c = 1 / (1 + 2 * N^2 * (1 - exp(-kappa)));
 I = 0:N - 1;
 g = c * (exp(-kappa * I) + exp(kappa * (I - N))) / (1 - exp(-kappa * N));
 
+% Note: While the x domain can be any sensible domain on the real line,
+% we only work with the interval [0, 1]. Hence, we transform x to the
+% variable y, which resides on the unit interval. We accomplish this simply
+% by letting the initial data for the x values on the interval [xmin, xmax]
+% be equal to the initial data for y on [0, 1]
+
 % Allocate solution U
 U = zeros(M, N);
-U(1, :) = initial(x);
+U(1, :) = initialdata;
 
 % Time solution evaluation run time
 ticstart = tic;
@@ -56,7 +66,7 @@ end
 %% Execution
 for i = 1:M - 1
     u = U(i, :);
-    % Extent u on the ends with periodic conditions
+    % Extend u on the ends with periodic conditions
     u_periodic = u([end, 1:end, 1]);
     
     % Calculate m
@@ -73,9 +83,7 @@ for i = 1:M - 1
     % Transform mnext back to u
     U(i + 1, :) = ifft(fft(g) .* fft(mnext));
     
-    if showprogress
-        updateProgress( (i + 1) / (M) );
-    end
+    updateProgress( (i + 1) / (M) );
 end
 
 elapsed = toc(ticstart);
@@ -88,9 +96,11 @@ if showprogress
 end
 
     function [] = updateProgress(fraction)
-        if (fraction - progress >= 0.05 || progress >= 1.0)
-            progress = fraction;
-            waitbar(fraction, w);
+        if showprogress
+            if (fraction - progress >= 0.05 || progress >= 1.0)
+                progress = fraction;
+                waitbar(fraction, w);
+            end
         end
     end
 end

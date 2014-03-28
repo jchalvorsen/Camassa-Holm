@@ -9,9 +9,12 @@ clear path;
 
 %% Configuration
 % Spatial resolution
-N = 1024;
+N = 4096;
 % Maximum time value
-T = 15;
+T = 1;
+
+xmin = 0;
+xmax = 1;
 
 % Compression settings
 % nx = number of x values in compressed matrix
@@ -22,13 +25,16 @@ nt = 600;
 %% Initial condition (as a function of x)
 a = 1;
 %initial = @(x) cosh(min(x, a - x));
-initial = @(x) cosh(min(x, a - x)) + circshift(0.5 * cosh(min(x, a - x)), repmat(round(length(x) / 3), length(x), 1));
-%initial = @(x) 0.1 * exp(- abs(x - 0.5));
-%initial = @(x) cosh(2 * abs(x) - 1) / (2 * sinh(1));
-%initial = @(x) cosh(min(x, a - x) - 0.5) / sinh(a / 2) + cosh(min(x, a - x)) / sinh(a / 2);
+%initial = @(x) [cosh(min(x(1:floor(end/2)), a - x(1:floor(end/2)))), ...
+%    repmat(cosh(min(x(floor(end / 2 + 1)), a - x(floor(end / 2 + 1)))), 1, ...
+%    length(x) - floor(length(x) / 2))] - ...
+%    cosh(min(x(floor(end / 2 + 1)), a - x(floor(end / 2 + 1))));
+%initial = @(x) cosh(min(x, a - x)) + circshift(0.5 * cosh(min(x, a - x)), ...
+%    repmat(round(length(x) / 2), length(x), 1));
+initial = @(x) exp(-5 * abs(x - 1.2)) + exp(-5 * abs(x - 0.2));
 
 %% Solve equation
-[U, x, t] = holdenraynaud(N, T, [0, 1], initial);
+[U, x, t] = holdenraynaud(N, T, [xmin, xmax], initial);
 M = size(U, 1);
 
 %% Compression
