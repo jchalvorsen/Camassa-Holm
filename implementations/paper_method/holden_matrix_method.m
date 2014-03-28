@@ -22,8 +22,13 @@ h = 1 / N * (xmax - xmin);
 % X values in grid
 x = xmin + (0:N - 1) * h;
 
-% Find peaks in initial data
-peaks = findpeaks(initial(x));
+% Generate initial data
+initialdata = initial(x);
+
+% Find peaks in initial data. Add boundaries if necessary
+peaks = findpeaks(initialdata);
+if initialdata(end) > initialdata(end - 1); peaks = [ peaks initialdata(end) ]; end
+if initialdata(1) > initialdata(2); peaks = [ initialdata(1) peaks ]; end
 
 % Determine temporal step size. Use the CFL condition and assume
 % the sum of the peaks of the initial data is equal to the velocity of the
@@ -32,14 +37,13 @@ k = h / (2*abs(sum(peaks)));
 
 % t values in grid
 t = 0:k:T;
-disp(peaks)
 
 % Amount of time values
 M = length(t);
 
 % Allocate solution U
 U = zeros(M, N);
-U(1, :) = initial(x);
+U(1, :) = initialdata;
 
 % Time solution evaluation run time
 ticstart = tic;
@@ -48,7 +52,7 @@ if showprogress
     w = waitbar(progress, 'Solving Camassa-Holm...');
 end
 
-
+%% Execution
 % A - operator to go from u to m
 e = ones(N,1);
 A = spdiags([-e/h^2, (1 + 2/h^2) * e, -e/h^2], -1:1, N, N);
@@ -78,6 +82,9 @@ for i = 1:M-1
     % Everythin in one operation below
     %u = u + k * (A\((-B*((A*u).*u)) - (A*u).*(C*u)));
 end
+
+%% End execution
+
 elapsed = toc(ticstart);
 if printtiming
     fprintf('Spent %4.2f seconds on solving equation.\n', elapsed);
