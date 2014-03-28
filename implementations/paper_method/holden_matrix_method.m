@@ -26,14 +26,15 @@ x = xmin + (0:N - 1) * h;
 initialdata = initial(x);
 
 % Find peaks in initial data. Add boundaries if necessary
-peaks = findpeaks(initialdata);
-if initialdata(end) > initialdata(end - 1); peaks = [ peaks initialdata(end) ]; end
-if initialdata(1) > initialdata(2); peaks = [ initialdata(1) peaks ]; end
+% peaks = findpeaks(initialdata);
+% if initialdata(end) > initialdata(end - 1); peaks = [ peaks initialdata(end) ]; end
+% if initialdata(1) > initialdata(2); peaks = [ initialdata(1) peaks ]; end
+peaks = 2;
 
 % Determine temporal step size. Use the CFL condition and assume
 % the sum of the peaks of the initial data is equal to the velocity of the
 % wave (assuming it is a wave).
-k = h / (2*abs(sum(peaks)));
+k = h^2 / (2*abs(sum(peaks)));
 
 % t values in grid
 t = 0:k:T;
@@ -63,6 +64,9 @@ A(1,N) = -1/h^2;
 B = spdiags([-e/h, e/h], -1:0, N, N);
 B(1,N) = -1/h;
 
+% F - forwards difference
+F = -B';
+
 % C - central difference
 C = spdiags([-e/(2*h), e/(2*h)], [-1, 1], N, N);
 C(1,N) = -1/(2*h);
@@ -75,12 +79,14 @@ for i = 1:M-1
     if showprogress
         updateProgress( (i + 1) / (M) );
     end
-    % TEST OF NEW FORMAT
     m = A*u;
-    mt = m + k*(- B*(m.*u) - m.*(C*u) );
+    %mt = m + k*(- B*(m.*u) - m.*(C*u) );   %(does not do negative waves)
+    mt = m + k*( -B*(m.*max(u,0)) - F*(m.*min(u,0)) - m.*(C*u) );
     U(i+1,:) = (A\mt)';
-    % Everythin in one operation below
+    % Everythin in one operation below (does not do negative waves)
     %u = u + k * (A\((-B*((A*u).*u)) - (A*u).*(C*u)));
+    % linear system
+    
 end
 
 %% End execution
