@@ -20,13 +20,13 @@ clear path;
 
 %% Configuration
 % Spatial resolution (number of points along the x-axis)
-N = 1024;
+N = 64000;
 
 % Solve for the total duration [0, T]
-T = 10;
+T = 20;
 
 % Stepsize
-S = 1;
+S = 0.1;
 
 % Compression settings
 nx = 200;
@@ -36,7 +36,8 @@ nt = 1000;
 a = 1;
 %initial = @(x) cosh(min(x, a - x));
 initial = @(x) cosh(min(x, a - x)) + ...
-    circshift(0.5 * cosh(min(x, a - x)), repmat(round(length(x) / 3), length(x), 1));
+    circshift(0.5 * cosh(min(x, a - x)), repmat(round(length(x) / 2), length(x), 1));
+
 
 %% Preparation
 Z = zeros(0, 0);
@@ -75,5 +76,5 @@ close(w);
 
 % Compress the resulting matrix
 [C, Cx, Ct] = compress(cx, ct, Z, nx, nt);
-animatedplot(Cx, Ct, Z);
+animatedplot(Cx, Ct, C);
 
