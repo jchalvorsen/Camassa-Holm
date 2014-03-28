@@ -27,7 +27,7 @@ initialdata = initial(x);
 % Find peaks in initial data. Add boundaries if necessary
 peaks = findpeaks(initialdata);
 if initialdata(end) > initialdata(end - 1); peaks = [ peaks initialdata(end) ]; end
-if initialdata(1) > initialdata(2); peaks = [ initialdata(1) initialdata ]; end
+if initialdata(1) > initialdata(2); peaks = [ initialdata(1) peaks ]; end
 
 % Determine temporal step size. Use the CFL condition and assume
 % the sum of the peaks of the initial data is equal to the velocity of the
