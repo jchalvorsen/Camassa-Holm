@@ -9,7 +9,7 @@ clear path;
 
 %% Configuration
 % Spatial resolution
-N = 2048;
+N = 256;
 % Maximum time value
 T = 5;
 
@@ -24,17 +24,17 @@ nt = 600;
 
 %% Initial condition (as a function of x)
 a = 1;
-%initial = @(x) cosh(min(x, a - x));
+initial = @(x) cosh(min(x, a - x));
 %initial = @(x) [cosh(min(x(1:floor(end/2)), a - x(1:floor(end/2)))), ...
 %    repmat(cosh(min(x(floor(end / 2 + 1)), a - x(floor(end / 2 + 1)))), 1, ...
 %    length(x) - floor(length(x) / 2))] - ...
 %    cosh(min(x(floor(end / 2 + 1)), a - x(floor(end / 2 + 1))));
-initial = @(x) cosh(min(x, a - x)) + circshift(0.5 * cosh(min(x, a - x)), ...
-    repmat(round(length(x) / 2), length(x), 1));
+%initial = @(x) cosh(min(x, a - x)) + circshift(0.5 * cosh(min(x, a - x)), ...
+%    repmat(round(length(x) / 2), length(x), 1));
 %initial = @(x) exp(-10 * abs(x - 1.2)) + exp(-10 * abs(x - 0.2));
 
 %% Solve equation
-[U, x, t] = holdenraynaud(N, T, [xmin, xmax], initial);
+[U, x, t] = linearholdenraynaud(N, T, [xmin, xmax], initial);
 M = size(U, 1);
 
 %% Compression
