@@ -77,25 +77,16 @@ C(N,1) = 1/(2*h);
 
 %% Execution
 for i = 1:M - 1
+    % Calculate m_t by the modified Holden-Raynaud scheme
     u = transpose(U(i, :));
-    % Extend u on the ends with periodic conditions
-    u_periodic = u([end, 1:end, 1]);
-    
-    % Calculate m
-    m = u - fbdiff(u_periodic, h);
-    %m = A * u;
-    
-    % Calculate m_t
-    mu = m .* u;
-    %mt = - bdiff(mu, h) - m .* D(u_periodic, h);
-    mt = - (B*(m.*max(u,0)) + F*(m.*min(u,0))) - m.*(C*u);
+    m = A * u;
+    mt = - (B * (m .* max(u, 0)) + F * (m .* min(u, 0))) - m .* (C * u);
     
     % Applying Euler's Method, we calculate the next "row" of m values
-    mnext = m + k * mt;
+    m = m + k * mt;
     
     % Transform mnext back to u by convolution
-    U(i + 1, :) = ifft(fftg .* fft(mnext));
-    %U(i + 1, :) = (A \ mnext)';
+    U(i + 1, :) = ifft(fftg .* fft(m));
     
     updateProgress( (i + 1) / (M) );
 end
@@ -137,7 +128,7 @@ end
 
 function [ Y ] = D(X, h)
 % Average of forward and backward difference
-Y = (X(3:end) - X(1:end - 2))/ (2 * h);
+Y = [ X(2) - X(end), (X(3:end) - X(1:end - 2)), X(1) - X(end - 1)] / (2 * h);
 end
 
 function [ k ] = calculatetimestep(x, h)
