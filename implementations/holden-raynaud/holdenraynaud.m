@@ -24,7 +24,7 @@ x = xmin + (0:N-1) * h;
 initialdata = initial(x);
 
 % Temporal step size
-k = calculatetimestep(initialdata, h);
+k = calculatetimestep(initial, xmin, xmax, h);
 
 % t values in grid
 t = 0:k:T;
@@ -119,21 +119,17 @@ A(N,1) = -1/h^2;
 A(1,N) = -1/h^2;
 end
 
-function [ k ] = calculatetimestep(x, h)
-% Find all maxima and minima in the initial data x
-p = x([end, 1:end, 1]);
-maxima = findpeaks(p);
-minima = findpeaks(-p);
-
-% Assume the maximum height of any wave is equal to the sum of all
-% "positive" waves (u > 0) or "negative" waves (u < 0), whichever is
-% larger.
-maxheight = max(sum(abs(maxima)), sum(abs(minima)));
+function [ k ] = calculatetimestep(initial, a, b, h)
+% NB! Assumes x is all positive
+areaAbove = integral(@(x) max(initial(x), 0), a, b);
+areaBelow = - integral(@(x) min(initial(x), 0), a, b);
+A = max(areaAbove, areaBelow);
+c = A / 2;
 
 % Use the CFL condition and assume the maximum height is equal to the 
 % velocity of the wave (assuming it is a wave). 
 % Multiply by a factor to overestimate its maximum velocity.
-k = h / (1.05 * maxheight);
+k = h / (1.05 * c);
 
 end
 
