@@ -1,15 +1,16 @@
 function [ U, x, t ] = holdenraynaud(N, T, xdomain, initial, varargin)
 
-[ showprogress, printtiming ] = parse(varargin);
+[ showprogress, printtiming, timestep ] = parse(varargin);
 
 %% Sanity checks
 assert(isvector(xdomain), 'xdomain must be a vector.');
 assert(length(xdomain) == 2, 'xdomain must have length 2.');
 assert(xdomain(2) > xdomain(1), 'xdomain = [XMIN, XMAX] must have XMAX > XMIN');
 assert(N > 1, 'N must be greater than 1.');
+assert(timestep >= 0, 'Supplied timestep must be non-negative');
 
 %% Configuration
-% Domain of x. 
+% Domain of x.
 xmin = xdomain(1);
 xmax = xdomain(2);
 
@@ -24,7 +25,17 @@ x = xmin + (0:N-1) * h;
 initialdata = initial(x);
 
 % Temporal step size
-k = calculatetimestep(initial, xmin, xmax, h);
+dt = calculatetimestep(initial, xmin, xmax, h);
+if timestep == 0
+    k = dt;
+else
+    % Use user-supplied timestep
+    k = timestep;
+    if k > dt
+       warning(['User-supplied timestep is larger than CFL-based heuristic. ' ...
+           'Stability may suffer as a result.']);
+    end
+end
 
 % t values in grid
 t = 0:k:T;
@@ -65,7 +76,7 @@ for i = 1:M - 1
     m = A * u;
     mt = - (B * (m .* max(u, 0)) + F * (m .* min(u, 0))) - m .* (C * u);
     
-    % Applying Euler's Method, we calculate new m values
+    % Calculate new values for m using Euler's method
     m = m + k * mt;
     
     % Transform mnext back to u by convolution
@@ -120,26 +131,28 @@ A(1,N) = -1/h^2;
 end
 
 function [ k ] = calculatetimestep(initial, a, b, h)
-% NB! Assumes x is all positive
+
 areaAbove = integral(@(x) max(initial(x), 0), a, b);
 areaBelow = - integral(@(x) min(initial(x), 0), a, b);
 A = max(areaAbove, areaBelow);
 c = A / 2;
+%c = 2 * c;
 
-% Use the CFL condition and assume the maximum height is equal to the 
-% velocity of the wave (assuming it is a wave). 
-% Multiply by a factor to overestimate its maximum velocity.
-k = h / (1.05 * c);
+% Use the CFL condition and assume the maximum height is equal to the
+% velocity of the wave (assuming it is a wave).
+% Multiply by a heuristic "goodness factor" to overestimate its maximum velocity.
+k = h / (1.1 * c);
 
 end
 
 %% Parameter parsing for holdenraynaud
-function [ showprogress, printtiming ] = parse(options)
+function [ showprogress, printtiming, timestep ] = parse(options)
 % Parses additional options to holdenraynaud
 
 % Set default values for options
 showprogress = true;
 printtiming = true;
+timestep = 0;
 
 count = length(options);
 for k = 1:2:count
@@ -151,15 +164,30 @@ for k = 1:2:count
     
     value = options{k + 1};
     assert(~isempty(value), missingMessage);
-    assert(islogical(value), strcat('Parameter value for parameter ''', ...
-        parameter, ''' is not logical (true/false).'));
     
     % Note: Lower-case for case insensitivity
     switch parameter
         case 'showprogress'
+            assertlogical(parameter, value);
             showprogress = value;
         case 'printtiming'
+            assertlogical(parameter, value);
             printtiming = value;
+        case 'dt'
+            assertnumber(parameter, value);
+            timestep = value;
     end
+    
+    
 end
+
+    function assertlogical(parameter, value)
+        assert(islogical(value), strcat('Parameter value for parameter ''', ...
+            parameter, ''' is not logical (true/false).'));
+    end
+
+    function assertnumber(parameter, value)
+        assert(isscalar(value) && isnumeric(value), strcat('Parameter value for parameter ''', ...
+            parameter, ''' is not a numerical scalar.'));
+    end
 end
