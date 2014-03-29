@@ -15,11 +15,13 @@ xmax = xdomain(2);
 
 %% Preparation
 % Spatial step size
-h = 1 / N;
+h = (xmax - xmin) / N;
+%h = 1 / N;
 
 % y and corresponding x values in grid
-y = (0:N - 1) * h;
-x = (xmax - xmin) * y + xmin;
+%y = (0:N - 1) * h;
+%x = (xmax - xmin) * y + xmin;
+x = xmin + (0:N-1) * h;
 
 % Generate initial data
 initialdata = initial(x);
@@ -31,8 +33,9 @@ if initialdata(1) > initialdata(2); peaks = [ initialdata(1) peaks ]; end
 
 % Determine temporal step size. Use the CFL condition and assume
 % the sum of the peaks of the initial data is equal to the velocity of the
-% wave (assuming it is a wave).
-k = h / abs(sum(peaks));
+% wave (assuming it is a wave). Multiply by a factor to overestimate its
+% maximum velocity
+k = h / (1.05 * abs(sum(peaks)));
 
 % t values in grid
 t = 0:k:T;
@@ -40,12 +43,13 @@ t = 0:k:T;
 % Amount of time values
 M = length(t);
 
+K = 1 / h;
 % Determine g (see paper by Holden, Raynaud), and pre-calculate fft(g)
-kappa = log( (1 + 2 * N^2 + sqrt(1 + 4*N^2)) / (2 * N ^ 2));
-c = 1 / (1 + 2 * N^2 * (1 - exp(-kappa)));
+kappa = log( (1 + 2 * K^2 + sqrt(1 + 4*K^2)) / (2 * K ^ 2));
+c = 1 / (1 + 2 * K^2 * (1 - exp(-kappa)));
 I = 0:N - 1;
 g = c * (exp(-kappa * I) + exp(kappa * (I - N))) / (1 - exp(-kappa * N));
-fftg = fft(g);
+fftg = transpose(fft(g));
 
 % Note: While the x domain can be any sensible domain on the real line,
 % we only work with the interval [0, 1]. Hence, we transform x to the
@@ -64,25 +68,45 @@ if showprogress
     w = waitbar(progress, 'Solving Camassa-Holm...');
 end
 
+% Difference operator matrices
+% Forward + backward?
+e = ones(N,1);
+A = spdiags([-e/h^2, (1 + 2/h^2) * e, -e/h^2], -1:1, N, N);
+A(N,1) = -1/h^2;
+A(1,N) = -1/h^2;
+% B - backward difference
+B = spdiags([-e/h, e/h], -1:0, N, N);
+B(1,N) = -1/h;
+
+% F - forward difference
+F = -B';
+
+% C - central difference
+C = spdiags([-e/(2*h), e/(2*h)], [-1, 1], N, N);
+C(1,N) = -1/(2*h);
+C(N,1) = 1/(2*h);
+
 %% Execution
 for i = 1:M - 1
-    u = U(i, :);
+    u = transpose(U(i, :));
     % Extend u on the ends with periodic conditions
     u_periodic = u([end, 1:end, 1]);
     
     % Calculate m
     m = u - fbdiff(u_periodic, h);
+    %m = A * u;
     
     % Calculate m_t
     mu = m .* u;
-    mu_periodic = mu([end, 1:end, 1]);
-    mt = - diff(mu_periodic(1:end - 1)) / h - m .* D(u_periodic, h);
+    %mt = - bdiff(mu, h) - m .* D(u_periodic, h);
+    mt = - (B*(m.*max(u,0)) + F*(m.*min(u,0))) - m.*(C*u);
     
     % Applying Euler's Method, we calculate the next "row" of m values
     mnext = m + k * mt;
     
     % Transform mnext back to u by convolution
     U(i + 1, :) = ifft(fftg .* fft(mnext));
+    %U(i + 1, :) = (A \ mnext)';
     
     updateProgress( (i + 1) / (M) );
 end
@@ -109,6 +133,14 @@ end
 end
 
 %% Finite differences
+function [ Y ] = fdiff(X, h)
+Y = diff(X([1:end, 1])) / h;
+end
+
+function [ Y ] = bdiff(X, h)
+Y = diff(X([end, 1:end])) / h;
+end
+
 function [ Y ] = fbdiff(X, h)
 % Forward, followed by backward finite difference
 Y = (X(1:end - 2) - 2 * X(2:end - 1) + X(3:end)) / (h^2);
@@ -116,7 +148,7 @@ end
 
 function [ Y ] = D(X, h)
 % Average of forward and backward difference
-Y =  (X(3:end) - X(1:end - 2))/ (2 * h);
+Y = (X(3:end) - X(1:end - 2))/ (2 * h);
 end
 
 %% Parameter parsing for holdenraynaud
