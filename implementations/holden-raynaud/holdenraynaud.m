@@ -16,20 +16,14 @@ xmax = xdomain(2);
 %% Preparation
 % Spatial step size
 h = (xmax - xmin) / N;
-%h = 1 / N;
 
-% y and corresponding x values in grid
-%y = (0:N - 1) * h;
-%x = (xmax - xmin) * y + xmin;
+% x values in grid
 x = xmin + (0:N-1) * h;
 
 % Generate initial data
 initialdata = initial(x);
 
-% Find peaks in initial data. Add boundaries if necessary
-% peaks = findpeaks(initialdata);
-% if initialdata(1) > initialdata(2); peaks = [ initialdata(1) peaks ]; end
-% if initialdata(end) > initialdata(end - 1); peaks = [ peaks initialdata(end) ]; end
+% Temporal step size
 k = calculatetimestep(initialdata, h);
 
 % t values in grid
@@ -38,8 +32,9 @@ t = 0:k:T;
 % Amount of time values
 M = length(t);
 
+% Determine g (see paper by Holden, Raynaud), and pre-calculate fft(g).
+% Note that by replacing N by K = 1 / h the method works on arbitrary intervals.
 K = 1 / h;
-% Determine g (see paper by Holden, Raynaud), and pre-calculate fft(g)
 kappa = log( (1 + 2 * K^2 + sqrt(1 + 4*K^2)) / (2 * K ^ 2));
 c = 1 / (1 + 2 * K^2 * (1 - exp(-kappa)));
 I = 0:N - 1;
@@ -58,22 +53,10 @@ if showprogress
 end
 
 % Difference operator matrices
-% Forward + backward?
-e = ones(N,1);
-A = spdiags([-e/h^2, (1 + 2/h^2) * e, -e/h^2], -1:1, N, N);
-A(N,1) = -1/h^2;
-A(1,N) = -1/h^2;
-% B - backward difference
-B = spdiags([-e/h, e/h], -1:0, N, N);
-B(1,N) = -1/h;
-
-% F - forward difference
-F = -B';
-
-% C - central difference
-C = spdiags([-e/(2*h), e/(2*h)], [-1, 1], N, N);
-C(1,N) = -1/(2*h);
-C(N,1) = 1/(2*h);
+A = forwardbackward_matrix(N, h);
+B = backward_matrix(N, h);
+F = forward_matrix(N, h);
+C = central_matrix(N, h);
 
 %% Execution
 for i = 1:M - 1
@@ -82,7 +65,7 @@ for i = 1:M - 1
     m = A * u;
     mt = - (B * (m .* max(u, 0)) + F * (m .* min(u, 0))) - m .* (C * u);
     
-    % Applying Euler's Method, we calculate the next "row" of m values
+    % Applying Euler's Method, we calculate new m values
     m = m + k * mt;
     
     % Transform mnext back to u by convolution
@@ -113,26 +96,30 @@ end
 end
 
 %% Finite differences
-function [ Y ] = fdiff(X, h)
-Y = diff(X([1:end, 1])) / h;
+function [ B ] = backward_matrix(N, h)
+B = spdiags([- ones(N, 1), ones(N, 1) ], -1:0, N, N) / h;
+B(1,N) = -1 / h;
 end
 
-function [ Y ] = bdiff(X, h)
-Y = diff(X([end, 1:end])) / h;
+function [ F ] = forward_matrix(N, h)
+F = - transpose(backward_matrix(N, h));
 end
 
-function [ Y ] = fbdiff(X, h)
-% Forward, followed by backward finite difference
-Y = (X(1:end - 2) - 2 * X(2:end - 1) + X(3:end)) / (h^2);
+function [ C ] = central_matrix(N, h)
+e = ones(N, 1);
+C = spdiags([-e/(2*h), e/(2*h)], [-1, 1], N, N);
+C(1,N) = -1/(2*h);
+C(N,1) = 1/(2*h);
 end
 
-function [ Y ] = D(X, h)
-% Average of forward and backward difference
-Y = [ X(2) - X(end), (X(3:end) - X(1:end - 2)), X(1) - X(end - 1)] / (2 * h);
+function [ A ] = forwardbackward_matrix(N, h)
+e = ones(N, 1);
+A = spdiags([-e, (h^2 + 2) * e, -e], -1:1, N, N) / (h^2);
+A(N,1) = -1/h^2;
+A(1,N) = -1/h^2;
 end
 
 function [ k ] = calculatetimestep(x, h)
-
 % Find all maxima and minima in the initial data x
 p = x([end, 1:end, 1]);
 maxima = findpeaks(p);
