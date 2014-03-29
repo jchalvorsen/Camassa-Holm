@@ -1,0 +1,158 @@
+function [ U, x, t ] = holden_matrix_linear(N, T, xdomain, initial, varargin)
+
+[ showprogress, printtiming ] = parse(varargin);
+
+%% Sanity checks
+assert(isvector(xdomain), 'xdomain must be a vector.');
+assert(length(xdomain) == 2, 'xdomain must have length 2.');
+assert(xdomain(2) > xdomain(1), 'xdomain = [XMIN, XMAX] must have XMAX > XMIN');
+assert(N > 1, 'N must be greater than 1.');
+
+%% Configuration
+% Domain of x. Note that this is currently locked to [0, 1], but
+% hopefully this will be configurable. Worst-case, we transform it to [0,
+% 1] and then eventually back.
+xmin = xdomain(1);
+xmax = xdomain(2);
+
+%% Preparation
+% Spatial step size
+h = 1 / N * (xmax - xmin);
+
+% X values in grid
+x = xmin + (0:N - 1) * h;
+
+% Generate initial data
+initialdata = initial(x);
+
+% Find peaks in initial data. Add boundaries if necessary
+% peaks = findpeaks(initialdata);
+% if initialdata(end) > initialdata(end - 1); peaks = [ peaks initialdata(end) ]; end
+% if initialdata(1) > initialdata(2); peaks = [ initialdata(1) peaks ]; end
+peaks = 2;
+
+% Determine temporal step size. Use the CFL condition and assume
+% the sum of the peaks of the initial data is equal to the velocity of the
+% wave (assuming it is a wave).
+k = h / (2*abs(sum(peaks)));
+
+% t values in grid
+t = 0:k:T;
+
+% Amount of time values
+M = length(t);
+
+% Allocate solution U
+U = zeros(M, N);
+U(1, :) = initialdata;
+
+% Time solution evaluation run time
+ticstart = tic;
+progress = 0;
+if showprogress
+    w = waitbar(progress, 'Solving Camassa-Holm...');
+end
+
+%% Execution
+
+% A - operator to go from u to m
+e = ones(N,1);
+A = spdiags([-e/h^2, (1 + 2/h^2) * e, -e/h^2], -1:1, N, N);
+A(N,1) = -1/h^2;
+A(1,N) = -1/h^2;
+
+% B - backwards difference
+B = spdiags([-e/h, e/h], -1:0, N, N);
+B(1,N) = -1/h;
+
+% F - forwards difference
+F = -B';
+
+% C - central difference
+C = spdiags([-e/(2*h), e/(2*h)], [-1, 1], N, N);
+C(1,N) = -1/(2*h);
+C(N,1) = 1/(2*h);
+
+% precompute constants
+u = initialdata'*0 + 10;
+m0 = A*u;   % 1
+A0 = B*m0;  % 0
+B0 = 3/2*m0;% 3/2
+C0 = m0/2;  % 1/2
+D0 = 3/2*B*u + 1/2*F*u; % 0
+E0 = u; % 1
+alpha = D0.*m0 + E0.*A0; % 0
+
+
+for i = 1:M-1
+    u = U(i,:)';
+    % updating waitbar
+    if showprogress
+        updateProgress( (i + 1) / (M) );
+    end
+    m = A*u;
+    %mt = m + k*(- B*(m.*u) - m.*(C*u) );   %(does not do negative waves)
+    %mt = m + k*( -B*(m.*max(u,0)) - F*(m.*min(u,0)) - m.*(C*u) );
+    
+    % trying out linear system
+    %mt = alpha - A0.*u -B0.*(B*u) - C0.*(F*u) - D0.*m - E0.*(B*m);
+    mt = 0     -     0 -3/2*(B*u) - 1/2*(F*u) -     0 - B*(m);
+    mnext = m + k * mt;
+    U(i+1,:) = (A\mnext)';
+    if i == 1
+        %disp(max(alpha))
+        %isp(max(U(i+1,:)))
+    end
+    % Everythin in one operation below (does not do negative waves)
+    %u = u + k * (A\((-B*((A*u).*u)) - (A*u).*(C*u)));
+end
+
+%% End execution
+
+elapsed = toc(ticstart);
+if printtiming
+    fprintf('Spent %4.2f seconds on solving equation.\n', elapsed);
+end
+
+if showprogress
+    close(w);
+end
+
+    function [] = updateProgress(fraction)
+        if (fraction - progress >= 0.05 || progress >= 1.0)
+            progress = fraction;
+            waitbar(fraction, w);
+        end
+    end
+end
+
+%% Parameter parsing for holdenraynaud
+function [ showprogress, printtiming ] = parse(options)
+% Parses additional options to holdenraynaud
+
+% Set default values for options
+showprogress = true;
+printtiming = true;
+
+count = length(options);
+for k = 1:2:count
+    % Sanity checks
+    parameter = lower(options{k});
+    missingMessage = strcat('Missing parameter value for parameter ''', ...
+        parameter, '''.');
+    assert(k + 1 <= count, missingMessage);
+    
+    value = options{k + 1};
+    assert(~isempty(value), missingMessage);
+    assert(islogical(value), strcat('Parameter value for parameter ''', ...
+        parameter, ''' is not logical (true/false).'));
+    
+    % Note: Lower-case for case insensitivity
+    switch parameter
+        case 'showprogress'
+            showprogress = value;
+        case 'printtiming'
+            printtiming = value;
+    end
+end
+end
