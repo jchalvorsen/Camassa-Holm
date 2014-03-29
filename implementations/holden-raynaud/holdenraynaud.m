@@ -27,15 +27,10 @@ x = xmin + (0:N-1) * h;
 initialdata = initial(x);
 
 % Find peaks in initial data. Add boundaries if necessary
-peaks = findpeaks(initialdata);
-if initialdata(end) > initialdata(end - 1); peaks = [ peaks initialdata(end) ]; end
-if initialdata(1) > initialdata(2); peaks = [ initialdata(1) peaks ]; end
-
-% Determine temporal step size. Use the CFL condition and assume
-% the sum of the peaks of the initial data is equal to the velocity of the
-% wave (assuming it is a wave). Multiply by a factor to overestimate its
-% maximum velocity
-k = h / (1.05 * abs(sum(peaks)));
+% peaks = findpeaks(initialdata);
+% if initialdata(1) > initialdata(2); peaks = [ initialdata(1) peaks ]; end
+% if initialdata(end) > initialdata(end - 1); peaks = [ peaks initialdata(end) ]; end
+k = calculatetimestep(initialdata, h);
 
 % t values in grid
 t = 0:k:T;
@@ -50,12 +45,6 @@ c = 1 / (1 + 2 * K^2 * (1 - exp(-kappa)));
 I = 0:N - 1;
 g = c * (exp(-kappa * I) + exp(kappa * (I - N))) / (1 - exp(-kappa * N));
 fftg = transpose(fft(g));
-
-% Note: While the x domain can be any sensible domain on the real line,
-% we only work with the interval [0, 1]. Hence, we transform x to the
-% variable y, which resides on the unit interval. We accomplish this simply
-% by letting the initial data for the x values on the interval [xmin, xmax]
-% be equal to the initial data for y on [0, 1]
 
 % Allocate solution U
 U = zeros(M, N);
@@ -149,6 +138,25 @@ end
 function [ Y ] = D(X, h)
 % Average of forward and backward difference
 Y = (X(3:end) - X(1:end - 2))/ (2 * h);
+end
+
+function [ k ] = calculatetimestep(x, h)
+
+% Find all maxima and minima in the initial data x
+p = x([end, 1:end, 1]);
+maxima = findpeaks(p);
+minima = findpeaks(-p);
+
+% Assume the maximum height of any wave is equal to the sum of all
+% "positive" waves (u > 0) or "negative" waves (u < 0), whichever is
+% larger.
+maxheight = max(sum(abs(maxima)), sum(abs(minima)));
+
+% Use the CFL condition and assume the maximum height is equal to the 
+% velocity of the wave (assuming it is a wave). 
+% Multiply by a factor to overestimate its maximum velocity.
+k = h / (1.05 * maxheight);
+
 end
 
 %% Parameter parsing for holdenraynaud
