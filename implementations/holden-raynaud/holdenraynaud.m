@@ -81,8 +81,15 @@ for i = 1:M - 1
     
     % Transform mnext back to u by convolution
     U(i + 1, :) = ifft(fftg .* fft(m));
-    
     updateProgress( (i + 1) / (M) );
+    
+    % Trying the total matrix buildup:
+%     I = spdiags(ones(N,1),0,N,N);
+%     Ms = spdiags(m,0,N,N);
+%     Q = -(B*Ms + Ms*C);
+%     Z = I + A\(k*Q);
+%     U(i+1,:) = Z*u;
+    
 end
 
 %% Exit
