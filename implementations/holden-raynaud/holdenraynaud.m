@@ -37,11 +37,12 @@ else
     end
 end
 
+% Adjust timestep (downward) so that t(end) == T. M is number of time values
+M = fix(T/ k) + 2;
+k = T / (M - 1);
+
 % t values in grid
 t = 0:k:T;
-
-% Amount of time values
-M = length(t);
 
 % Determine g (see paper by Holden, Raynaud), and pre-calculate fft(g).
 % Note that by replacing N by K = 1 / h the method works on arbitrary intervals.
@@ -143,7 +144,6 @@ areaAbove = integral(@(x) max(initial(x), 0), a, b);
 areaBelow = - integral(@(x) min(initial(x), 0), a, b);
 A = max(areaAbove, areaBelow);
 c = A / 2;
-%c = 2 * c;
 
 % Use the CFL condition and assume the maximum height is equal to the
 % velocity of the wave (assuming it is a wave).
