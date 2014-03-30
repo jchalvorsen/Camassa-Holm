@@ -22,4 +22,10 @@ D^{0} &= \frac{3}{2}D_{-}u^{0} + \frac{1}{2}D_{+}u^{0}, \\
 E^{0} &= u^{0}, \\
 \alpha &= (\frac{3}{2}D_{-}u^{0} + \frac{1}{2}D_{+}u^{0})m^{0} = A^{0}E^{0}.
 \end{align*}
-Numerical testing on this linearized scheme showed that better results were produced when $A^{0}, B^{0}, C^{0}$ were set to $-A^{0}, -B^{0}, -C^{0}$ respectively. 
+Numerical testing on this linearized scheme showed that better results were produced after redefining some of the terms as follows:
+
+\begin{align*}
+m &= -(u - D_{-}D_{+}u), \\
+D^{0} &= -\frac{3}{2}(D_{-}u + D_{+}u), \\
+\alpha &= -2D^{0}E^{0} + A^{0}E^{0}.
+\end{align*}
