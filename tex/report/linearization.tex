@@ -1,1 +1,25 @@
-insert linearization here
+A linearization of our finite difference scheme was performed, in an attempt to say something about the nonlinear scheme. 
+
+\begin{align*}
+m_{t} = -uD_{-}m - \frac{3}{2}mD_{-}u - \frac{1}{2}mD_{+}u
+\end{align*} 
+
+Define $f(U) := f(u, D_{-}u, D_{+}u, m, D_{-}m),$ so that the Taylor expansion becomes
+\begin{align*}
+f(U) &\approx f(U^{0}) + f'(U^{0})^{T}(U-U^{0}),\\
+&= f(U^{0}) - f'(U^{0})^{T}U^{0} + f'(U^{0})^{T}U, \\
+\end{align*}
+where the first two terms are constants, depending only on  $U^{0}$. Expanding the terms eventually leads to the linear finite difference scheme
+\begin{align*}
+m_{t} = f(U) \approx \alpha - A^{0}u - B^{0}D_{-}u - C^{0}D_{+}u - D^{0}m - E^{0}D_{-}m,
+\end{align*}
+with constants
+\begin{align*}
+A^{0} &= D_{-}m^{0}, \\
+B^{0} &= \frac{3}{2}m^{0}, \\
+C^{0} &= \frac{1}{2}m^{0}, \\
+D^{0} &= \frac{3}{2}D_{-}u^{0} + \frac{1}{2}D_{+}u^{0}, \\
+E^{0} &= u^{0}, \\
+\alpha &= (\frac{3}{2}D_{-}u^{0} + \frac{1}{2}D_{+}u^{0})m^{0} = A^{0}E^{0}.
+\end{align*}
+Numerical testing on this linearized scheme showed that better results were produced when $A^{0}, B^{0}, C^{0}$ were set to $-A^{0}, -B^{0}, -C^{0}$ respectively. 
