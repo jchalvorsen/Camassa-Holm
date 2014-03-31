@@ -14,26 +14,24 @@ m &= u - D_- D_+ u \notag \\
 m_t &=- D_- ( m u ) - m D ( u ),
 \label{eq:discretized}
 \end{align}
-where the operators are defined as
+where the operators are defined as in (\ref{eq:operators})
 
 \begin{align*}
-D_- D_+ \left( U_j^n \right)  &= \frac{U_{j-1}^n - 2 U_j^n + U_{j+1}^n}{h^2} = \frac{\partial}{\partial x} (u) + O \left( h^ 2 \right) \\
- D_- \left(M_j^n U_j^n \right) &= U_j^n D_-( M_j^n ) + M_j^n D_- (U_j^n) \\
-  &= M_j^n \frac{U_J^n - U_{j-1}^n}{h} + U_j^n \frac{M_{j}^n - M_{j-1}^n}{h} \\
-  &= m \frac{\partial}{\partial x} (u) + u \frac{\partial}{\partial x} (m) + O \left( h \right)  \\
-D \left(U_j^n \right) &= \frac{U_{j+1}^n - U_{j-1}^n}{2h} = \frac{\partial}{\partial x} (u) + O \left( h^2 \right).
+D_- D_+ \left( U_j^n \right)  &= \frac{\partial}{\partial x} (u) + \mathcal{O} \left( h^ 2 \right) \\
+ D_- \left(M_j^n U_j^n \right) &= m \frac{\partial}{\partial x} (u) + u \frac{\partial}{\partial x} (m) + \mathcal{O} \left( h \right)  \\
+D \left(U_j^n \right) &= \frac{\partial}{\partial x} (u) + \mathcal{O} \left( h^2 \right).
 \end{align*}
 
 If we also use forward Euler to integrate we get that
 \begin{align*}
-D_+ (m) = \frac{M_j^{n+1} - M_j^n}{k} =  \frac{\partial}{\partial t} (m) + O(k).
+D_+ (m) =  \frac{\partial}{\partial t} (m) + \mathcal{O}(k).
 \end{align*}
 
 Putting this back into equation (\ref{eq:discretized}) we get
 
 \begin{align*}
-m &= u - \left( u_{xx} + O\left(h^2\right) \right) \\
-m_t  + O(k) &= - \left( m u_x + u m_x + O(h) \right) - m \left( u_x + O(h) \right).
+m &= u - \left( u_{xx} + \mathcal{O}\left(h^2\right) \right) \\
+m_t  + \mathcal{O}(k) &= - \left( m u_x + u m_x + \mathcal{O}(h) \right) - m \left( u_x + \mathcal{O}(h) \right).
 \end{align*}
 
 Letting the timestep and spacestep go to zero, we get
