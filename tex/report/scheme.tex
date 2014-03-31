@@ -1,7 +1,40 @@
-Our finite difference scheme is a slight modification of the scheme presented by Holden and Raynaud. The modification allows the scheme to handle both positive and negative peakons. 
+The first finite difference scheme considered, was the one used by Holden and Raynaud: \cite{holden2006convergence}
+\begin{align}
+m &= u - D_{-}D_{+}u, \notag \\ 
+m_t &= -D_{-}(mu) - mD(u),
+\end{align}
+where the operators are defined as
+\begin{align}
+\label{eq:operators}
+D_{+}u_{j}^{n} = \frac{u_{j}^{n}-u_{j-1}^{n}}{h},\quad
+D_{-}u_{j}^{n} = \frac{u_{j+1}^{n}-u_{j}^{n}}{h},\quad
+D = \frac{D_{+}+D_{-}}{2}
+\end{align}
+The main disadvantage of this scheme is that one has to assume only positive values of $u$.
+
+Our finite difference scheme is based on a scheme presented by Morten Lien Dahlby\cite{dahlby2007geometric}, and is a slight modification of the scheme presented by Holden and Raynaud.
 
 \begin{align}
-m &= u - D_{-}D_{+}u, \\
-m_t &= -D_{-}(m(u \vee 0)) -D_{+}(m(u \wedge 0)) - mD(u),
+m &= u - D_{-}D_{+}u, \notag \\ 
+m_t &= -D_{-}(m(u \vee 0)) -D_{+}(m(u \wedge 0)) - mD(u), 
 \end{align}
 where $(u \vee 0) = \text{max}(u,0)$ and $(u \wedge 0) = \text{min}(u,0)$.
+
+The original scheme by Holden and Raynaud used the $D_{-}$-operator, making it an upwind method. This would not work for antipeakons, peakons with negative height and speed. Modifying the scheme to use  $D_{-}$ when $u > 0$ and $D_{+}$ when $ u < 0$ makes it applicable to waves traveling in either direction. 
+
+To find an appropriate temporal step, the Courant–Friedrichs–Lewy (CFL) condition was considered. The CFL condition is a necessary condition for stability in our finite difference scheme, and can be stated as
+\begin{align}
+C = \frac{u\Delta t}{\Delta x} \leq C_{\text{max}},
+\end{align}
+where $u$ is the velocity of the wave, $\Delta t$ is the length of the temporal step, and $\Delta x$ is the length of the spacial step. In our case, the value of $C_{\text{max}}$ was chosen to be 1. Rearranging this inequality gives an expression for $\Delta t$:
+\begin{align}
+\Delta t \leq \frac{\Delta x}{u}
+\end{align}
+The velocity $u$ was found using the fact that a peakon's velocity is directly proportional with its height. A peakon of the form $c\text{e}^{-|x-ct|}$ will have a constant area of $2c$, as well as a velocity of $c$ and a maximum height of $c$. Hence, $\Delta t$ can be calculated by taking half of the integral of the initial function. The calculation of $\Delta t$ for antipeakons is analogous. \\
+
+[INSERT PRETTY PICTURES HERE]\\
+
+Error plots for decreasing $h$ , over the same time and space interval:\\
+A preliminary conclusion based on the plot of errors for decreasing the spacial stepsize $h$ shows that decreasing $h$ will improve the approximation.
+
+

@@ -13,13 +13,13 @@ clear path;
 
 %% Configuration
 % Spatial resolution
-I = 15:1:17;
+I = 8:1:12;
 N = 2.^I;
 % Maximum time value
-T = 6;
+T = 0.1;
 ss = 1./N;
 xmin = -10;
-xmax = 15;
+xmax = 45;
 
 % Compression settings
 % nx = number of x values in compressed matrix
@@ -48,10 +48,10 @@ for i = 1:nM
     test = zeros(length(t),1);
     for j = 1:length(t)
         reference(j,:) = ref(x, t(j));
-        error(j) = norm(U(j,:) - reference(j,:),2)/norm(reference(j,:),2);
+        error(j) = norm(U(j,:) - reference(j,:),1)/norm(reference(j,:),1);
     end
     plot(t,error,'color',color(i,:))
-    convergence(i) = error(end) - error(end-1);
+    convergence(i) = error(end);
     
     M = size(U, 1);
     %% Compression
@@ -68,7 +68,7 @@ legenddata = cellstr(num2str((N)'));
 ylabel('Relative fault')
 xlabel('Time')
 legend(legenddata,'Location','NorthWest')
-
+p = polyfit(log(N'), log(convergence), 1)
 figure
 hold on
 for i = 1:nM

@@ -11,8 +11,8 @@ Content
     - ~~Attribute scheme to Holden/Raynaud~~
 - Scheme
     - Figures, comparison to reference solution(s) (peakon)
-    - CFL condition
-    - Improvements as per diva-portal
+    - ~~CFL condition~~
+    - ~~Improvements as per diva-portal~~
     - Numerical convergence tests (space/time)
     - Errors
     - Justify correctness by evaluating behavior, compared to reference solution(s)
