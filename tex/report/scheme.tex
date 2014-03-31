@@ -32,13 +32,34 @@ where $u$ is the velocity of the wave, $\Delta t$ is the length of the temporal 
 \end{align}
 The velocity $u$ was found using the fact that a peakon's velocity is directly proportional with its height. A peakon of the form $c\text{e}^{-|x-ct|}$ will have a constant area of $2c$, as well as a velocity of $c$ and a maximum height of $c$. Hence, $\Delta t$ can be calculated by taking half of the integral of the initial function. The calculation of $\Delta t$ for antipeakons is analogous. \\
 
-[INSERT PRETTY PICTURES HERE]\\
 
-\textbf{Error plots for decreasing $h$ , constant time and space interval}\\
 A preliminary conclusion based on the plot of errors for decreasing spacial stepsize $h$ shows that decreasing $h$ will improve the approximation.\\
 
-\textbf{Plot of approximated solution together with actual solution for decreasing spacial step $h$}\\
+
 This plot shows that as the spacial stepsize $h$ decreases, our scheme becomes a good approximation of the solution. \\
 
-\textbf{Rate of Convergence}\\
+
 Our numerical experiments show a rate of convergence in space which is slightly faster than a linear rate. However, we experience that decreasing the temporal stepsize beyond a certain size increases the error. 
+
+
+\begin{figure}[h]
+        \centering
+        \includegraphics[width=0.8\textwidth]{gfx/loglog}
+        \caption{Loglog plog - rate of convergence.}
+        \label{fig:loglog}
+\end{figure}
+
+\begin{figure}[h]
+        \centering
+        \includegraphics[width=0.8\textwidth]{gfx/attimeT}
+        \caption{Plot of approximated solution together with actual solution for decreasing spacial step $h$.}
+        \label{fig:attimeT}
+\end{figure}
+
+\begin{figure}[h]
+        \centering
+        \includegraphics[width=0.8\textwidth]{gfx/erroroftime}
+        \caption{Error plots for decreasing $h$, constant time and space interval.}
+        \label{fig:erroroftime}
+\end{figure}
+
