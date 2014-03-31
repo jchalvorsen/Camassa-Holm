@@ -82,19 +82,27 @@ C = central_matrix(N, h);
 %% Execution
 for i = 1:M - 1
     U0 = transpose(u0(x, t(i)));
-    M0 = -A * U0;
-    A0 = B * M0;
-    B0 = (3 / 2) * M0;
-    C0 = (1 / 2) * M0;
-    D0 = (3 / 2) * B * U0 + (1 / 2) * F * U0;
-    E0 = U0;
+    M0 = - A * U0;
+%     A0 = - B * M0;
+%     B0 = -(3 / 2) * M0;
+%     C0 = -(1 / 2) * M0;
+%     D0 = (3 / 2) * B * U0 + (3 / 2) * F * U0;
+%     E0 = U0;
+
+    A0 = - B * M0;
+    B0 = - (1 / 2) * M0;
+    C0 = - (3 / 2) * M0;
+    D0 = - (3 / 2) * B * U0 - (3 / 2) * F * U0;
+    E0 = - U0;
     
-    alpha = D0 .* M0 + E0 .* A0;
+    %alpha = D0 .* M0 + E0 .* A0;
+    alpha = - 2 * D0 .* B0 + A0 .* E0;
     
     % Calculate m_t by the modified Holden-Raynaud scheme
     u = transpose(U(i, :));
     m = A * u;
-    mt = alpha - A0 .* u - B0 .* (B * u) - C0 .* (F * u) - D0 .* m - E0 .* (B * m);
+    %mt = alpha - A0 .* u - B0 .* (B * u) - C0 .* (F * u) - D0 .* m - E0 .* (B * m);
+    mt = alpha + A0 .* u + B0 .* (F * u) + C0 .* (B * u) + D0 .* m + E0 .* (B * m);
     
     % Calculate new values for m using Euler's method
     m = m + k * mt;
