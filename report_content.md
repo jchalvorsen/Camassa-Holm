@@ -18,9 +18,9 @@ Content
     - Justify correctness by evaluating behavior, compared to reference solution(s)
 - Analysis
     - ~~Holden/Raynaud: main points of analysis~~
-    - Consistency
+    - ~~Consistency~~
     - Von Neumann: failure motivates linearization
-    - "Matrix stability": unable to bound
+    - ~~"Matrix stability": unable to bound~~
 - ~~Linearization~~ REVISIT
     - Present scheme, and present modifications (and why?)
     - Motivation behind Taylor expansion about the peakon solution
