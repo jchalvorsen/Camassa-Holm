@@ -3,7 +3,7 @@ Content
 
 - Title: Exploring a finite difference scheme for the Camassa-Holm equation
 - Abstract
-- Introduction to Camassa-Holm
+- ~~Introduction to Camassa-Holm~~
     - ~~Paper by Camassa and Holm, historical context~~
     - ~~Figures of solitons, peakons~~
     - ~~Multi-peakon solutions~~
