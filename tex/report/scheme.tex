@@ -1,0 +1,7 @@
+Our finite difference scheme is a slight modification of the scheme presented by Holden and Raynaud. The modification allows the scheme to handle both positive and negative peakons. 
+
+\begin{align}
+m &= u - D_{-}D_{+}u, \\
+m_t &= -D_{-}(m(u \vee 0)) -D_{+}(m(u \wedge 0)) - mD(u),
+\end{align}
+where $(u \vee 0) = \text{max}(u,0)$ and $(u \wedge 0) = \text{min}(u,0)$.
