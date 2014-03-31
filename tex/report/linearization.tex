@@ -1,33 +1,33 @@
 A linearization of our finite difference scheme was performed, in an attempt to say something about the nonlinear scheme. 
 
-\begin{align*}
+\begin{align}
 m &= u - D_{-} D_{+} u \\
 m_{t} &= -uD_{-}m - \frac{3}{2}mD_{-}u - \frac{1}{2}mD_{+}u
-\end{align*} 
+\end{align} 
 
 Define $f(U) := f(u, D_{-}u, D_{+}u, m, D_{-}m),$ so that the Taylor expansion becomes
-\begin{align*}
+\begin{align}
 f(U) &\approx f(U_{0}) + f'(U_{0})^{T}(U-U_{0}),\\
 &= f(U_{0}) - f'(U_{0})^{T}U_{0} + f'(U_{0})^{T}U, \\
-\end{align*}
-where the first two terms are constants, depending only on  $U_{0}$. Expanding the terms eventually leads to the linear finite difference scheme
-\begin{align*}
+\end{align}
+where the first two terms are known, depending only on a chosen function $U_{0}$. Expanding the terms eventually leads to the linear finite difference scheme
+\begin{align}
 m_{t} = f(U) \approx \alpha + A_{0}u + B_{0}D_{+}u + C_{0}D_{-}u + D_{0}m + E_{0}D_{-}m,
-\end{align*}
+\end{align}
 with terms
-\begin{align*}
+\begin{align}
 A_{0} &= -D_{-}m_{0}, \\
 B_{0} &= - \frac{1}{2}m_{0}, \\
 C_{0} &= - \frac{3}{2}m_{0}, \\
 D_{0} &= - \frac{3}{2}D_{-}u_{0} - \frac{1}{2}D_{+}u_{0}, \\
 E_{0} &= - u_{0}, \\
 \alpha &= 2 D_0 B_0 + A_0 E_0
-\end{align*}
+\end{align}
 
-Unfortunately the linearized scheme proved to be unstable. In an effort to stabilize it, numerical experimentation showed that changing a few of the terms yielded a scheme that when linearized about a peakon solution yielded a stable and reasonably accurate approximation in the single peakon case. The new terms are as follows:
+Unfortunately the linearized scheme proved to be unstable. In an effort to stabilize it, numerical experimentation showed that changing a few of the terms yielded a scheme that when linearized about a peakon solution yielded a stable and reasonably accurate approximation in the single peakon case. The new terms are
 
-\begin{align*}
+\begin{align}
 m &= -(u - D_{-}D_{+}u), \\
 D_{0} &= -\frac{3}{2}(D_{-}u + D_{+}u), \\
 \alpha &= -2D_{0}B_{0} + A_{0}E_{0}.
-\end{align*}
+\end{align}
