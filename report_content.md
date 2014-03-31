@@ -27,7 +27,7 @@ Content
     - Numerical results, compare with analytic
     - Analysis: Von neumann fails, "matrix stability" may be possible to prove, though too complex
 - Implementation details
-    - FFT/convolution for efficiency
+    - ~FFT/convolution for efficiency~
     - memory/processing time "trade-off"
     - profiling?
 - Conclusion

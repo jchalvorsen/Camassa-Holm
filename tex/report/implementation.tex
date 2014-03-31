@@ -1,1 +1,34 @@
-Yay.
+For each time step when solving the non-linear scheme (REF HER!), one essentially transforms $u$ to $m$ by the transformation matrix $\bm{A} = \bm{I - D}$, such that $\bm{m} = \bm{Au}$. Transforming $m$ back to $u$ usually involves solving the linear system $\bm{Au} = \bm{m}$. 
+
+Holden and Raynaud \cite{holden2006convergence} present a more efficient way of transforming $m$ to $u$. Denoting the linear operator from $u$ to $m$ as $L$, $u$ can be written as a discrete convolution product of $m$ and $g$:
+\begin{align*}
+u_i = L^{-1} m_i = \sum\limits_{j \in \mathds{Z}} g_{i - j} m_j,
+\end{align*}
+
+where $g$ is periodized such that
+\begin{align*}
+g_i^p = c \frac{e^{-\kappa i} + e^{\kappa (i - n)}}{1 - e^{-\kappa n}},
+\end{align*}
+
+where $i = 0, ..., n - 1$, and $g$ is defined by the constants
+\begin{equation}
+\label{eq:g_constants}
+\begin{aligned}
+\kappa = \ln \left( 1 + \frac{h(\sqrt{4 + h^2} + h)}{2} \right)
+\end{aligned}
+\qquad
+\begin{aligned}
+c = \frac{1}{1 + \frac{2}{h^2} (1 - e^{-\kappa})}.
+\end{aligned}
+\end{equation}
+
+Note that when comparing to the original paper, the constants here are defined in a slightly different way. The reason is simply that Holden and Raynaud derive $g$ on the interval $x \in [0, 1]$, whereas \eqref{eq:g_constants} represents the equivalent extension to any interval.
+
+The convolution can then efficiently be calculated by the Fast Fourier Transform (FFT):
+\begin{align*}
+u = \mathcal{F}^{-1} (\mathcal{F} (g) \cdot \mathcal{F}(m)),
+\end{align*}
+
+where $\mathcal{F}$ denotes the FFT and $\mathcal{F}^{-1}$ denotes the inverse FFT. Since $g$ is constant, its fourier transform can be precalculated, which saves a lot of computation time. In fact, compared to solving the linear system by standard matrix techniques, we measured the scheme to consistently spend a staggering $77\%$ less time when implemented with the FFT method.
+
+Through active use of MATLAB's profiling tools, 
