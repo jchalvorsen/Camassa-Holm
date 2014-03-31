@@ -12,80 +12,80 @@ addpath(fullfile(path, '../../util'));
 clear path;
 
 %% Configuration
-I = 5:16;
+I = 8:2:14;
 h = zeros(1, length(I));
-
+N = 2.^I;
+ts = 2.^(-I);
 % Maximum time value
-T = 5;
+T = 20;
 xmin = -10;
-xmax = 15;
+xmax = 35;
 
 % Compression settings
 % nx = number of x values in compressed matrix
-nx = 400;
+nx = 800;
 % nt = number of t values in compressed matrix
-nt = 400;
+nt = 1;
 
 %% Initial condition and reference solution
 ref = @(x,t) exp(-abs(x-t));
 initial = @(x) ref(x, 0);
 
-% Spatial steps
+figure
+hold on
+color = hsv(length(I));
 
-% result = zeros(nt,nx,nM);
-% figure
-% hold on
-% color = hsv(nM);
 %% Loop to solve equation and check convergence
-errors = zeros(1, length(I)); 
+errors = zeros(1, length(I));
+finalvalue = zeros(length(I), nx);
+normsplot = zeros(length(I), nx);
 for j = 1:length(I);
-    N = 2 ^ I(j);
-    [U, x, t] = holdenraynaud(N, T, [xmin, xmax], initial);
+    [U, x, t] = holdenraynaud(N(j), T, [xmin, xmax], initial);
     
     h(j) = x(2) - x(1);
-    % generate reference solution:
-    reference = zeros(length(t),length(x));
+    %generate reference solution:
+    norms = zeros(1,length(t));
     for l = 1:length(t)
-        reference(l,:) = ref(x, t(l));
+       norms(l) = sqrt(h(j))*norm(ref(x, t(l)) - U(l,:),2);
     end
+    plot(t,norms,'color',color(j,:))
     
     % Error function norm
-    errors(j) = sqrt(h(j)) * norm(U(l,:) - reference(l,:),2);
+    %errors(j) = sqrt(h(j))*norm(ref(x,T)-U(end,:));
+    errors(j) = norms(end);
     
-    %plot(t,error,'color',color(i,:))
+    %% Compression of the function values at time T
+    [Z, xcomp, tcomp] = compress(x, t, U, nx, nt);
+    finalvalue(j, :) = Z;   
     
-    %% Compression
-    % Don't expand matrix if result matrix is smaller
-    %nx = min(nx, N(i));
-    %nt = min(nt, M);
-%     [Z, xcomp, tcomp] = compress(x, t, U, nx, nt);
-%     result(:,:,i) = Z;
 end
-%% Plotting
-
-% legenddata = cellstr(num2str((N)'));
-% ylabel('Relative fault')
-% xlabel('Time')
-% legend(legenddata,'Location','NorthWest')
-
-% figure
-% hold on
-% for i = 1:nM
-%     plot(xcomp,result(end,:,i)','color',color(i,:))
-% end
-% plot(xcomp,ref(xcomp,T),'k')
-% legenddata(nM + 1 ) = cellstr('Analytical solution');
-% legend(legenddata,'Location','NorthWest')
-% xlabel('Travelling peakon')
 
 p = polyfit(log(h), log(errors), 1)
 
+%% Plotting
+% info about normplots over time
+legenddata = cellstr(num2str((N)'));
+ylabel('Relative fault')
+xlabel('Time')
+legend(legenddata,'Location','NorthWest')
+
+% plot of convergence
+figure
+plot(log(h),log(errors),'b*')
+hold on
+x = linspace(log(h(1)),log(h(end)));
+f = p(1)*x + p(2);
+plot(x,f,'b')
+xlabel('log of stepsize h')
+ylabel('log of error')
+
+% plot peakons at time T
+legenddata(length(I) + 1 ) = cellstr('Analytical solution');
 figure
 hold on
-loglog(h, errors,'b*-')
-
-%hold on
-% plot(h,fliplr(h) - max(h) + max(errors),'r*-')
-% plot(h,fliplr(h.^2) - max(h.^2) + max(errors),'g*-')
-% legend('Convergence of our method', 'Linear convergence','Quadratic convergence','Location','NorthEast')
-
+for i = 1:length(I)
+    plot(xcomp,finalvalue(i,:),'color', color(i,:),'LineWidth',1.3)
+end
+% plot analytical solution
+plot(xcomp,ref(xcomp,T),'k','LineWidth',1.3)
+legend(legenddata,'location', 'best')
