@@ -1,0 +1,5 @@
+Helge Holden and Xavier Raynaud proved the convergence of their finite difference scheme in their article, under the assumption that $u_{0} - u_{0}'' \geq 0$ for initial data $u_{0} \in H^{1}([0,1])$. This proof is far beyond the scope of our course, so only an outline of the proof will be provided. \\
+
+First, it is shown that if $m_{i}(0) \geq 0 \; \forall \;i$, then any solution $u(t)$ will have $m_{i}(t) \geq 0 \; \forall \;i $. Further, a uniform bound on the $H^{1}$ norm of the sequence $u^{n}$ in [0,T] is established. This also guarantees the existence of solutions in [0,T] for any given $T > 0$, since $\text{max}_{i}|u_{i}^{n}(t)| = \|u^{n}(\cdot,t)\|_{L^{\infty}} \leq \mathcal{O}(1) \|u^{n}\|_{H^{1}}$ remains bounded.
+
+After this, it is shown that $u_{x}^{n}$ and $u_{t}^{n}$ are bounded in $L^{2}([0,1])$, and that $u_{x}^{n}$ has a uniformly bounded total variation. This is enough to prove that one can extract a converging subsequence of $u^{n}$, and that the limit is a solution of the Camassa-Holm equation. 
