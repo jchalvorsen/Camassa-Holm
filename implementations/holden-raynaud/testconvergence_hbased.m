@@ -17,7 +17,7 @@ h = zeros(1, length(I));
 N = 2.^I;
 ts = 2.^(-I);
 % Maximum time value
-T = 20;
+T = 0.01;
 xmin = -10;
 xmax = 35;
 
@@ -68,6 +68,7 @@ legenddata = cellstr(num2str((N)'));
 ylabel('Relative fault')
 xlabel('Time')
 legend(legenddata,'Location','NorthWest')
+%print(gcf,'-dpng','-r400','erroroftime')
 
 % plot of convergence
 figure
@@ -75,9 +76,12 @@ plot(log(h),log(errors),'b*')
 hold on
 x = linspace(log(h(1)),log(h(end)));
 f = p(1)*x + p(2);
+f2 = 1*x + p(2);
 plot(x,f,'b')
+plot(x,f2,'r')
 xlabel('log of stepsize h')
 ylabel('log of error')
+%print(gcf,'-dpng','-r400','loglog')
 
 % plot peakons at time T
 legenddata(length(I) + 1 ) = cellstr('Analytical solution');
@@ -89,3 +93,5 @@ end
 % plot analytical solution
 plot(xcomp,ref(xcomp,T),'k','LineWidth',1.3)
 legend(legenddata,'location', 'best')
+%print(gcf,'-dpng','-r400','attimeT')
+
