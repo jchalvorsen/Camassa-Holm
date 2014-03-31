@@ -1,3 +1,5 @@
+\subsection*{Transforming $m$ to $u$}
+
 For each time step when solving the non-linear scheme (REF HER!), one essentially transforms $u$ to $m$ by the transformation matrix $\bm{A} = \bm{I - D}$, such that $\bm{m} = \bm{Au}$. Transforming $m$ back to $u$ usually involves solving the linear system $\bm{Au} = \bm{m}$. 
 
 Holden and Raynaud \cite{holden2006convergence} present a more efficient way of transforming $m$ to $u$. Denoting the linear operator from $u$ to $m$ as $L$, $u$ can be written as a discrete convolution product of $m$ and $g$:
@@ -31,4 +33,7 @@ u = \mathcal{F}^{-1} (\mathcal{F} (g) \cdot \mathcal{F}(m)),
 
 where $\mathcal{F}$ denotes the FFT and $\mathcal{F}^{-1}$ denotes the inverse FFT. Since $g$ is constant, its fourier transform can be precalculated, which saves a lot of computation time. In fact, compared to solving the linear system by standard matrix techniques, we measured the scheme to consistently spend a staggering $77\%$ less time when implemented with the FFT method.
 
-Through active use of MATLAB's profiling tools, 
+\subsection*{Computation time, memory usage and high-resolution grids}
+Through active use of MATLAB's profiling tools, we've eliminated any substantial bottlenecks that aren't directly required for the scheme to work. One could however shave another estimated $5-10\%$ off the running time at the cost of code clarity and readability, but at that point you may want to consider implementations in a more efficient language. In fact, the scheme is so efficient that computational time is typically not an issue unless one is generating a grid whose size is approaching or beyond the amount of memory found on a regular computer.
+
+Due to the linear convergence of the scheme, one may want to generate very large grids to achieve high-resolution simulations for extended time periods. In such cases, the memory required to hold the grid may exceed any practical memory capacity available. As a workaround, we tested a technique where we ran the simulation in a stepwise manner, such that the interval $[0, T]$ would be subdivided into a number of smaller intervals $[\tau_j, \tau_{j+1}]$ for $j = 0, ..., J - 1$, where $J$ is the number of subdivisions. Whenever a subdivision completes, the resulting matrix of that computation is compressed into a smaller matrix by interpolation of the grid, and the next subdivision is computed, using the results at time $\tau_{j}$ from the previous subdivision as its initial condition. Concatenating the compressed matrices yields a reasonably sized matrix whose structure is an accurate approximation of the high-resolution structure. Since the interpolation introduces (typically very small) additional errors, it is not a suitable technique for convergence verification, but it is very applicable in real world scenarios.
