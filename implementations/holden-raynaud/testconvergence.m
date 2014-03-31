@@ -13,13 +13,13 @@ clear path;
 
 %% Configuration
 % Spatial resolution
-I = 6:1:14;
+I = 15:1:17;
 N = 2.^I;
 % Maximum time value
-T = 15;
-
+T = 6;
+ss = 1./N;
 xmin = -10;
-xmax = 30;
+xmax = 15;
 
 % Compression settings
 % nx = number of x values in compressed matrix
@@ -48,7 +48,6 @@ for i = 1:nM
     test = zeros(length(t),1);
     for j = 1:length(t)
         reference(j,:) = ref(x, t(j));
-        test(j) = norm(reference(j,:),2);
         error(j) = norm(U(j,:) - reference(j,:),2)/norm(reference(j,:),2);
     end
     plot(t,error,'color',color(i,:))
@@ -85,4 +84,5 @@ figure
 plot(log(N),log(convergence),'b*-')
 hold on
 plot(log(N),fliplr(log(N)) - max(log(N)) + max(log(convergence)),'r*-')
-legend('Convergence of our method', 'Linear convergence','Location','NorthEast')
+plot(log(N),fliplr(log(N.^2)) - max(log(N.^2)) + max(log(convergence)),'g*-')
+legend('Convergence of our method', 'Linear convergence','Quadratic convergence','Location','NorthEast')

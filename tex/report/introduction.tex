@@ -1,5 +1,9 @@
 The Camassa-Holm equation is
 
 \begin{align}
-u_{t} - u_{xxt} + 2\kappa u_{x} + 3uu_{x} - 2u_{x}u_{xx} - uu_{xxx} = 0.
+u_{t} - u_{xxt} + 2\kappa u_{x} + 3uu_{x} - 2u_{x}u_{xx} - uu_{xxx} = 0
 \end{align}
+and is used to model waves in shallow water. 
+In this paper, the only cases considered are when $\kappa = 0$. This is sufficient due to the fact that solutions for a nonzero $\kappa$ are obtained from the solutions using $\kappa = 0$ by the transformation $v(x,t) = u(x + \kappa t, t) - \kappa$.
+
+This paper will present a finite difference scheme for solving the Camassa-Holm equation, as well as its implementation in MatLab. An analysis of the both the scheme and its implementation will be done. In addition to this, a linearized scheme will be considered. The numerical results for a range of different initial conditions will be presented. 
