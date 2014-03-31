@@ -4,11 +4,11 @@ Content
 - Title: Exploring a finite difference scheme for the Camassa-Holm equation
 - Abstract
 - Introduction to Camassa-Holm
-    - Paper by Camassa and Holm, historical context
+    - ~~Paper by Camassa and Holm, historical context~~
     - ~~Figures of solitons, peakons~~
     - ~~Multi-peakon solutions~~
     - ~~Peakon/antipeakon~~
-    - Attribute scheme to Holden/Raynaud
+    - ~~Attribute scheme to Holden/Raynaud~~
 - Scheme
     - Figures, comparison to reference solution(s) (peakon)
     - CFL condition
