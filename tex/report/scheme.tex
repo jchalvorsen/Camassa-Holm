@@ -1,4 +1,11 @@
-Our finite difference scheme is based on a scheme presented by Morten Lien Dahlby\cite{dahlby2007geometric}, and is a slight modification of the scheme presented by Holden and Raynaud\cite{holden2006convergence}. 
+The first finite difference scheme considered, was the one used by Holden and Raynaud: \cite{holden2006convergence}
+\begin{align}
+m &= u - D_{-}D_{+}u, \notag \\ 
+m_t &= -D_{-}(mu) - mD(u).
+\end{align}
+The main disadvantage of this scheme is that one has to assume only positive values of $u$.
+
+Our finite difference scheme is based on a scheme presented by Morten Lien Dahlby\cite{dahlby2007geometric}, and is a slight modification of the scheme presented by Holden and Raynaud.
 
 \begin{align}
 m &= u - D_{-}D_{+}u, \notag \\ 
@@ -17,7 +24,7 @@ where $u$ is the velocity of the wave, $\Delta t$ is the length of the temporal 
 \begin{align}
 \Delta t \leq \frac{\Delta x}{u}
 \end{align}
-The velocity $u$ was found by numerically calculating the integral of the initial function over the chosen interval, and the dividing this value by 2. This is done since the height of a peakon is 
+The velocity $u$ was found using the fact that a peakon's velocity is directly proportional with its height. A peakon of the form $c\text{e}^{-|x-ct|}$ will have a constant area of $2c$, as well as a velocity of $c$ and a maximum height of $c$. Hence, $\Delta t$ can be calculated by taking half of the integral of the initial function. The calculation of $\Delta t$ for antipeakons is analogous. 
 
 %areaAbove = integral(@(x) max(initial(x), 0), xmin, xmax);
 %areaBelow = - integral(@(x) min(initial(x), 0), xmin, xmax);
