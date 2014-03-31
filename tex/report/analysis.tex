@@ -48,7 +48,14 @@ Define $\bm{B}$ as the backwards difference matrix operator, $\bm{F}$ as the for
 \bm{m} = \bm{u}-D_-D_+\bm{u} = (\bm{I}-\bm{BF})\bm{u} = \bm{A} \bm{u}
 \end{align*} 
 
-
-
-
-
+\subsection*{von Neumann's stability criterion}
+An attempt at von Neumann's stability analysis was made, despite the fact that the procedure is primarily for finite difference schemes applied to linear partial differential equations. We define $U_{j}^{n} = g^{n}e^{i\theta j}$. For von Neumann stability, the desired inequality is
+\begin{align}
+|g| \leq 1 + \mu k,
+\end{align}
+where $\mu \geq 0$ is a constant. 
+The inequality produced by von Neumann stability analysis was
+\begin{align}
+|g| \leq 1+ \frac{k}{h}\;\vline \;g^{n}e^{i\theta j}\left[\frac{2-2e^{-2i\theta}+ e^{i\theta} - e^{-i\theta}}{2}\right]\vline,
+\end{align}
+which is clearly dependent on $h$. This makes von Neumann stability analysis inapplicable for our finite difference scheme.
