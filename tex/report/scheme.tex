@@ -8,8 +8,8 @@ The main disadvantage of this scheme is that one has to assume only positive val
 Our finite difference scheme is based on a scheme presented by Morten Lien Dahlby\cite{dahlby2007geometric}, and is a slight modification of the scheme presented by Holden and Raynaud.
 
 \begin{align}
-m &= u - D_{-}D_{+}u, \notag \\
-m_t &= -D_{-}(m(u \vee 0)) -D_{+}(m(u \wedge 0)) - mD(u),
+m &= u - D_{-}D_{+}u, \notag \\ 
+m_t &= -D_{-}(m(u \vee 0)) -D_{+}(m(u \wedge 0)) - mD(u), 
 \end{align}
 where $(u \vee 0) = \text{max}(u,0)$ and $(u \wedge 0) = \text{min}(u,0)$.
 
