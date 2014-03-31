@@ -26,10 +26,10 @@ Content
     - Motivation behind Taylor expansion about the peakon solution
     - Numerical results, compare with analytic
     - Analysis: Von neumann fails, "matrix stability" may be possible to prove, though too complex
-- Implementation details
-    - ~FFT/convolution for efficiency~
-    - memory/processing time "trade-off"
-    - profiling?
+- ~~Implementation details~~
+    - ~~FFT/convolution for efficiency~~
+    - ~~memory/processing time "trade-off"~~
+    - ~~profiling?~~
 - Conclusion
     - Thoughts on future experimentation/analysis
     - Elaborate on this once the rest of the report is semi-complete
