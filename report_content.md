@@ -21,7 +21,7 @@ Content
     - Consistency
     - Von Neumann: failure motivates linearization
     - "Matrix stability": unable to bound
-- Linearization
+- ~~Linearization~~ REVISIT
     - Present scheme, and present modifications (and why?)
     - Motivation behind Taylor expansion about the peakon solution
     - Numerical results, compare with analytic
