@@ -19,7 +19,7 @@ Content
 - Analysis
     - ~~Holden/Raynaud: main points of analysis~~
     - ~~Consistency~~
-    - Von Neumann: failure motivates linearization
+    - ~~Von Neumann: failure motivates linearization~~
     - ~~"Matrix stability": unable to bound~~
 - ~~Linearization~~ REVISIT
     - Present scheme, and present modifications (and why?)
