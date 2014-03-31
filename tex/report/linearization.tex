@@ -1,33 +1,49 @@
-A linearization of our finite difference scheme was performed, in an attempt to say something about the nonlinear scheme. 
-
-\begin{align}
+Analyzing non-linear partial differential equations is a non-trivial matter. In an attempt to provide sound arguments for the stability of the scheme, we developed a linearized version of the scheme. Since sufficient conditions for stability and convergence have been developed for linear schemes, we hoped to be able to prove these properties analytically, and perhaps make an argument that these properties extend to the non-linear scheme. Collecting the non-linear terms of the system (TRENGER REFERANSE TIL LIGNINGSSETT ($m$ og $m_t$) HER!) in a function $f(\bm{U})$, we can rewrite the system as 
+\begin{align*}
 m &= u - D_{-} D_{+} u \\
-m_{t} &= -uD_{-}m - \frac{3}{2}mD_{-}u - \frac{1}{2}mD_{+}u
-\end{align} 
+m_{t} &= f(\bm{U}),
+\end{align*} 
 
-Define $f(U) := f(u, D_{-}u, D_{+}u, m, D_{-}m),$ so that the Taylor expansion becomes
-\begin{align}
-f(U) &\approx f(U_{0}) + f'(U_{0})^{T}(U-U_{0}),\\
-&= f(U_{0}) - f'(U_{0})^{T}U_{0} + f'(U_{0})^{T}U, \\
-\end{align}
-where the first two terms are known, depending only on a chosen function $U_{0}$. Expanding the terms eventually leads to the linear finite difference scheme
-\begin{align}
-m_{t} = f(U) \approx \alpha + A_{0}u + B_{0}D_{+}u + C_{0}D_{-}u + D_{0}m + E_{0}D_{-}m,
-\end{align}
-with terms
-\begin{align}
-A_{0} &= -D_{-}m_{0}, \\
-B_{0} &= - \frac{1}{2}m_{0}, \\
-C_{0} &= - \frac{3}{2}m_{0}, \\
-D_{0} &= - \frac{3}{2}D_{-}u_{0} - \frac{1}{2}D_{+}u_{0}, \\
-E_{0} &= - u_{0}, \\
-\alpha &= 2 D_0 B_0 + A_0 E_0
-\end{align}
+where $\bm{U} = [u, D_+u, D_-u, m, D_-m]^T$. We may approximate the function $f(\bm{U})$ by truncating its Taylor series after the first derivative. This yields
+\begin{align*}
+f(\bm{U}) &\approx f(\bm{U}_{0}) + \nabla f(\bm{U}_{0})^{T}(\bm{U}-\bm{U}_{0}) \\
+&= f(\bm{U}_{0}) - \nabla f(\bm{U}_{0})^{T}\bm{U}_{0} + \nabla f(\bm{U}_{0})^{T}\bm{U}, \\
+&= \alpha + \nabla f(\bm{U}_{0})^{T}\bm{U},
+\end{align*}
 
-Unfortunately the linearized scheme proved to be unstable. In an effort to stabilize it, numerical experimentation showed that changing a few of the terms yielded a scheme that when linearized about a peakon solution yielded a stable and reasonably accurate approximation in the single peakon case. The new terms are
+where $\alpha = f(\bm{U}_{0}) - \nabla f(\bm{U}_{0})^{T}\bm{U}_{0}$ and $\bm{U}_0 = [u_0, D_+u_0, D_-u_0, m_0, D_-m_0]^T$. The new, linearized scheme is thus equivalent to the following system:
+\begin{align*}
+m &= u - D_{-} D_{+} u \\
+m_{t} &= \alpha + A_{0}u + B_{0}D_{+}u + C_{0}D_{-}u + D_{0}m + E_{0}D_{-}m.
+\end{align*}
 
+Note that $u_0$ is strictly speaking a function of $x$ and $t$, that is $u_0 = u_0 (x, t)$. Consequently, $\alpha$, $A_0$, $B_0$, $C_0$, $D_0$ and $E_0$ are in fact all functions of $(x, t)$, although they are in practice discrete values. The coefficients that arise when developing the Taylor expansion are as follows:
+\begin{equation*}
+\begin{aligned}
+A_{0} &= -D_{-}m_{0} \\
+B_{0} &= - \frac{1}{2}m_{0} \\
+C_{0} &= - \frac{3}{2}m_{0}
+\end{aligned}
+\qquad
+\begin{aligned}
+D_{0} &= - \frac{3}{2}D_{-}u_{0} - \frac{1}{2}D_{+}u_{0} \\
+E_{0} &= - u_{0} \\
+\alpha &= 2 D_0 B_0 + A_0 E_0.
+\end{aligned}
+\end{equation*}
+
+Unfortunately the linearized scheme proved to be unstable. In an effort to stabilize it, numerical experimentation showed that changing a few of the terms yielded a scheme that seemed stable under certain conditions. The changed coefficients are 
 \begin{align}
 m &= -(u - D_{-}D_{+}u), \\
 D_{0} &= -\frac{3}{2}(D_{-}u + D_{+}u), \\
 \alpha &= -2D_{0}B_{0} + A_{0}E_{0}.
 \end{align}
+
+Experimentation suggests that this scheme is stable when $u_0 = c e^{-|x - ct|}$, which - as mentioned earlier - is a known solution to the non-linear equation. Intuitively, this means that the scheme is linearized about a moving set of points that correspond to a traveling wave. 
+
+
+
+%
+% We will see that exploiting the fact that the Taylor expansion is evaluated about a point dependent on both space and time is paramount to the quality of the approximation to a solution of the Camassa-Holm equation.
+ 
+ %scheme that when linearized about a peakon solution yielded a stable and reasonably accurate approximation in the single peakon case. The new terms are

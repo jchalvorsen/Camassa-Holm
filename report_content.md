@@ -3,12 +3,12 @@ Content
 
 - Title: Exploring a finite difference scheme for the Camassa-Holm equation
 - Abstract
-- Introduction to Camassa-Holm
-    - Paper by Camassa and Holm, historical context
+- ~~Introduction to Camassa-Holm~~
+    - ~~Paper by Camassa and Holm, historical context~~
     - ~~Figures of solitons, peakons~~
     - ~~Multi-peakon solutions~~
     - ~~Peakon/antipeakon~~
-    - Attribute scheme to Holden/Raynaud
+    - ~~Attribute scheme to Holden/Raynaud~~
 - Scheme
     - Figures, comparison to reference solution(s) (peakon)
     - CFL condition
@@ -21,7 +21,7 @@ Content
     - Consistency
     - Von Neumann: failure motivates linearization
     - "Matrix stability": unable to bound
-- Linearization
+- ~~Linearization~~ REVISIT
     - Present scheme, and present modifications (and why?)
     - Motivation behind Taylor expansion about the peakon solution
     - Numerical results, compare with analytic
