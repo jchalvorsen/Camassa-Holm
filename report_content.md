@@ -17,7 +17,7 @@ Content
     - Errors
     - Justify correctness by evaluating behavior, compared to reference solution(s)
 - Analysis
-    - Holden/Raynaud: main points of analysis
+    - ~~Holden/Raynaud: main points of analysis~~
     - Consistency
     - Von Neumann: failure motivates linearization
     - "Matrix stability": unable to bound
