@@ -1,0 +1,27 @@
+- Introduction
+    - Background, article by C & H
+    - Known analytic solution: peakon (weak solution)
+    - Figures 
+        - Single peakon case
+        - Double peakons
+        - Two peakons, different heights, interaction
+        - Peakon/antipeakon, existence? Open question!
+- Scheme
+    - u -> m -> calculate m_t -> transform back to u
+    - m = Au
+    - Extension to handle antipeakons
+        - Leads to added stability for more classes of initial data
+    - CFL condition
+    - Convergence, comparison of different resolutions
+- Analysis
+    - Convergence
+        - Mention that proof exists, beyond scope
+    - Stability
+        - Present matrix form. Mention Von Neumann
+- Implementation
+    - Improve m-> u by FFT
+        - Staggering 77% reduction in computational time
+    - Profiling -> faster code
+    - Memory: limiting factor
+        - workaround: piecewise compression. Concatenation of compressed matrices
+        - FLASHY! Store tall & shiet
