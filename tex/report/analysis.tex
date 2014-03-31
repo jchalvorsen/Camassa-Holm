@@ -5,37 +5,52 @@ First, it is shown that if $m_{i}(0) \geq 0 \; \forall \;i$, then any solution $
 
 After this, it is shown that $u_{x}^{n}$ and $u_{t}^{n}$ are bounded in $L^{2}([0,1])$, and that $u_{x}^{n}$ has a uniformly bounded total variation. This is enough to prove that one can extract a converging subsequence of $u^{n}$, and that the limit is a solution of the Camassa-Holm equation. 
 
+This however, is far beyond the scope of this project, so we begin by proving consistency of our method.
+
 \subsection*{Consistency}
 Our scheme is as following:
 \begin{align}
-m &= u - D_- D_+ u \\
+m &= u - D_- D_+ u \notag \\
 m_t &=- D_- ( m u ) - m D ( u ),
+\label{eq:discretized}
 \end{align}
 where the operators are defined as
 
-\begin{align}
+\begin{align*}
 D_- D_+ \left( U_j^n \right)  &= \frac{U_{j-1}^n - 2 U_j^n + U_{j+1}^n}{h^2} = \frac{\partial}{\partial x} (u) + O \left( h^ 2 \right) \\
  D_- \left(M_j^n U_j^n \right) &= U_j^n D_-( M_j^n ) + M_j^n D_- (U_j^n) \\
   &= M_j^n \frac{U_J^n - U_{j-1}^n}{h} + U_j^n \frac{M_{j}^n - M_{j-1}^n}{h} \\
   &= m \frac{\partial}{\partial x} (u) + u \frac{\partial}{\partial x} (m) + O \left( h \right)  \\
-D \left(U_j^n \right) &= \frac{U_{j+1}^n - U_{j-1}^n}{2h} = \frac{\partial}{\partial x} (u) + O \left( h \right).
-\end{align}
+D \left(U_j^n \right) &= \frac{U_{j+1}^n - U_{j-1}^n}{2h} = \frac{\partial}{\partial x} (u) + O \left( h^2 \right).
+\end{align*}
 
 If we also use forward Euler to integrate we get that
-\begin{align}
-D_+ (m) = \frac{M_j^{n+1} - M_j^n}{k} =  \frac{\partial}{\partial t} (m) + O(k^2).
-\end{align}
+\begin{align*}
+D_+ (m) = \frac{M_j^{n+1} - M_j^n}{k} =  \frac{\partial}{\partial t} (m) + O(k).
+\end{align*}
 
-Putting this back into the equation we get that
+Putting this back into equation (\ref{eq:discretized}) we get
 
-\begin{align}
+\begin{align*}
 m &= u - \left( u_{xx} + O\left(h^2\right) \right) \\
-m_t  + O(k^2) &= - \left( m u_x + u m_x + O(h) \right) - m \left( u_x + O(h) \right)
-\end{align}
+m_t  + O(k) &= - \left( m u_x + u m_x + O(h) \right) - m \left( u_x + O(h) \right).
+\end{align*}
 
 Letting the timestep and spacestep go to zero, we get
-\begin{align}
+\begin{align*}
 m &= u - u_{xx} \\
-m_t &= - m u_x - u m_x - m u_x = - 2m u_x - u m_x
-\end{align}
-which is exactly the Camassa-Holm equation that we're trying to solve. Our scheme is consistent.
+m_t &= - m u_x - u m_x - m u_x = - 2m u_x - u m_x,
+\end{align*}
+which is equal to equation \ref{eq:CHhamiltonian}, so our scheme is consistent. If we should do the same analysis to the improved scheme 
+
+\subsection*{Stability}
+The finite difference scheme can be summarized in matrix form in the following way:
+Define $\bm{B}$ as the backwards difference matrix operator, $\bm{F}$ as the forwards difference operator and $\bm{C}$ as the mean of $\bm{B}$ and $\bm{F}$. Furthermore, define $\bm{A}$ as the transformation to go from $\bm{u}$ to $\bm{m}$, ie:
+\begin{align*}
+\bm{m} = \bm{u}-D_-D_+\bm{u} = (\bm{I}-\bm{BF})\bm{u} = \bm{A} \bm{u}
+\end{align*} 
+
+
+
+
+
