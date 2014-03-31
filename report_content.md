@@ -10,11 +10,11 @@ Content
     - ~~Peakon/antipeakon~~
     - ~~Attribute scheme to Holden/Raynaud~~
 - Scheme
-    - Figures, comparison to reference solution(s) (peakon)
+    - ~~Figures, comparison to reference solution(s) (peakon)~~
     - ~~CFL condition~~
     - ~~Improvements as per diva-portal~~
-    - Numerical convergence tests (space/time)
-    - Errors
+    - ~~Numerical convergence tests (space/time)~~ REVISIT TIME
+    - ~~Errors~~
     - Justify correctness by evaluating behavior, compared to reference solution(s)
 - Analysis
     - ~~Holden/Raynaud: main points of analysis~~
