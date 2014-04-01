@@ -1,4 +1,4 @@
-The first finite difference scheme considered, was the one used by Holden and Raynaud: \cite{holden2006convergence}
+The first finite difference scheme considered, was the one used by Holden and Raynaud \cite{holden2006convergence}:
 \begin{align}
 m &= u - D_{-}D_{+}u, \notag \\ 
 m_t &= -D_{-}(mu) - mD(u),
@@ -24,43 +24,52 @@ The original scheme by Holden and Raynaud used the $D_{-}$-operator, making it a
 
 To find an appropriate temporal step, the Courant–Friedrichs–Lewy (CFL) condition was considered. The CFL condition is a necessary condition for stability in our finite difference scheme, and can be stated as
 \begin{align}
-C = \frac{u\Delta t}{\Delta x} \leq C_{\text{max}},
+c\frac{\Delta t}{\Delta x} \leq 1,
 \end{align}
-where $u$ is the velocity of the wave, $\Delta t$ is the length of the temporal step, and $\Delta x$ is the length of the spacial step. In our case, the value of $C_{\text{max}}$ was chosen to be 1. Rearranging this inequality gives an expression for $\Delta t$:
+where $c$ is the velocity of the wave, $\Delta t$ is the length of the temporal step, and $\Delta x$ is the length of the spacial step. Rearranging this inequality gives an expression for $\Delta t$:
 \begin{align}
-\Delta t \leq \frac{\Delta x}{u}
+\Delta t \leq \frac{\Delta x}{c}
 \end{align}
-The velocity $u$ was found using the fact that a peakon's velocity is directly proportional with its height. A peakon of the form $c\text{e}^{-|x-ct|}$ will have a constant area of $2c$, as well as a velocity of $c$ and a maximum height of $c$. Hence, $\Delta t$ can be calculated by taking half of the integral of the initial function. The calculation of $\Delta t$ for antipeakons is analogous. \\
-
-
-A preliminary conclusion based on the plot of errors for decreasing spacial stepsize $h$ shows that decreasing $h$ will improve the approximation.\\
-
-
-This plot shows that as the spacial stepsize $h$ decreases, our scheme becomes a good approximation of the solution. \\
-
-
-Our numerical experiments show a rate of convergence in space which is slightly faster than a linear rate. However, we experience that decreasing the temporal stepsize beyond a certain size increases the error. 
-NEED SMALL T BECAUSE PROPAGATION OF ERROR
-
-\begin{figure}[h]
-        \centering
-        \includegraphics[width=0.8\textwidth]{gfx/loglog}
-        \caption{Loglog plog - rate of convergence.}
-        \label{fig:loglog}
+This makes it necessary to find an estimate for $c$. This was done by finding the integral of the initial condition, followed by calculating the height of a peakon of the form $c\text{e}^{-|x-ct|}$ with the same area, as shown in Figures \ref{fig:area1} and \ref{fig:area2}. Using the fact that a peakon's height is proportional to its speed, we have an approximation of $c$, and therefore also an approximation of $\Delta t$. The calculation of $\Delta t$ for antipeakons is analogous. \\
+\begin{figure}
+\begin{subfigure}[b]{0.49\textwidth}
+                \includegraphics[width=\textwidth]{gfx/areainitial}
+                \caption{Initial condition}
+                \label{fig:area1}
+\end{subfigure}
+\begin{subfigure}[b]{0.49\textwidth}
+                \includegraphics[width=\textwidth]{gfx/areapeakon}
+                \caption{Peakon of same area}
+                \label{fig:area2}
+\end{subfigure}
+\caption{Initial condition and peakon of same area, used to estimate $c$.}
 \end{figure}
 
-\begin{figure}[h]
-        \centering
-        \includegraphics[width=0.8\textwidth]{gfx/attimeT}
-        \caption{Plot of approximated solution together with actual solution for decreasing spacial step $h$.}
-        \label{fig:attimeT}
-\end{figure}
+
+A preliminary conclusion based on the plot of errors for decreasing spacial stepsize $h$ (Figure \ref{fig:erroroftime}) shows that decreasing $h$ will improve the approximation. Figure \ref{fig:attimeT} shows that as the spacial stepsize $h$ decreases, our scheme becomes a good approximation of the solution. \\
+
+
+Our numerical experiments show a rate of convergence in space which is slightly faster than a linear rate (Figure \ref{fig:loglog}). This was calculated using a short time interval, to reduce the effects of propagation of error. However, we experience that decreasing the temporal stepsize beyond a certain size increases the error. 
 
 \begin{figure}[h]
         \centering
         \includegraphics[width=0.8\textwidth]{gfx/erroroftime}
         \caption{Error plots for decreasing $h$, constant time and space interval.}
         \label{fig:erroroftime}
+\end{figure}
+
+\begin{figure}[h]
+        \centering
+        \includegraphics[width=0.8\textwidth]{gfx/attimeT}
+        \caption{Plot of approximated solution together with analytical solution for decreasing spacial step $h$.}
+        \label{fig:attimeT}
+\end{figure}
+
+\begin{figure}[h]
+        \centering
+        \includegraphics[width=0.8\textwidth]{gfx/loglog}
+        \caption{Loglog plot - rate of convergence in space. In this plot, the red reference line has a slope of 1, while the blue line found through numerical experiments has a slope of 1.08}
+        \label{fig:loglog}
 \end{figure}
 
 \subsection*{Semi-discretization}
