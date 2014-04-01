@@ -76,7 +76,7 @@ p6 = figure;
 area(x,peakon(x,0,c,(xmax-xmin)/2))
 axis([xmin xmax 0 c])
 
-print(p5,'-dpng','-r400','areainitial')
-print(p6,'-dpng','-r400','areapeakon')
+% print(p5,'-dpng','-r400','areainitial')
+% print(p6,'-dpng','-r400','areapeakon')
 
 
