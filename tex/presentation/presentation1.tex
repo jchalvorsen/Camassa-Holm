@@ -19,6 +19,10 @@
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{bm}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\captionsetup{compatibility=false}
 \mode<presentation> {
 
 % The Beamer class comes with a number of default slide themes
@@ -85,6 +89,8 @@
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
 
+\beamertemplatenavigationsymbolsempty
+
 \title[Camassa-Holm]{Exploring a finite difference scheme \\ for the Camassa-Holm equation} % The short title appears at the bottom of every slide, the full title is only on the title page
 
 \author{Halvorsen, \O sthus and Longva} % Your name
@@ -106,6 +112,7 @@ Norwegian University of Science and Technology
 %----------------------------------------------------------------------------------------
 \section{Presentation of the Camassa-Holm equation}
 \begin{frame}
+\frametitle{The Camassa-Holm equation}
 
 \begin{align*}
 u_{t} - u_{xxt} + 3uu_{x} - 2u_{x}u_{xx} - uu_{xxx} = 0,
@@ -118,11 +125,17 @@ m_t &= -2mu_x - um_x.
 \label{eq:CHhamiltonian}
 \end{align*}
 
+Peaked solitons (peakons) are weak solutions:
+\begin{align*}
+u(x, t) = ce^{-|x - ct|}
+\end{align*}
+
 \end{frame}
 
 
 \section{Single peakon}
 \begin{frame}
+\frametitle{Single peakon}
 
 \begin{figure}
 \includegraphics[width=0.8\linewidth]{gfx/peakon}
@@ -133,6 +146,7 @@ m_t &= -2mu_x - um_x.
 
 \section{Double peakon}
 \begin{frame}
+\frametitle{Double peakon}
 
 \begin{figure}
 \includegraphics[width=0.8\linewidth]{gfx/doublepeakon}
@@ -143,6 +157,7 @@ m_t &= -2mu_x - um_x.
 
 \section{Peakon interaction}
 \begin{frame}
+\frametitle{Peakon-peakon interaction, different heights}
 
 \begin{figure}
 \includegraphics[width=0.8\linewidth]{gfx/peakonovertake}
@@ -153,7 +168,7 @@ m_t &= -2mu_x - um_x.
 
 \section{Peakon/antipeakon}
 \begin{frame}
-
+\frametitle{Peakon-antipeakon interaction}
 \begin{figure}
 \includegraphics[width=0.8\linewidth]{gfx/peakonantipeakon}
 \end{figure}
@@ -181,12 +196,24 @@ m_t &=- D_- ( m u ) - m D ( u ),
 
 \section*{More scheme}
 \begin{frame}
-
+\frametitle{Matrix notation}
 \begin{align*}
-\bm{M}^{n+1} &= \bm{M}^{n} + k \left[- \bm{B} (\bm{M}^n \circ \bm{U}^n) - \bm{M}^n \circ \bm{D} (\bm{U}^n)\right] \\
-\bm{AU}^{n + 1} &= \bm{M}^{n+1}
+\bm{m}^{n+1} &= \bm{m}^{n} + k \left[- \bm{B} (\bm{M}^n \bm{u}^n) - \bm{M}^n \bm{D} (\bm{U}^n)\right] \\
+\bm{Au}^{n + 1} &= \bm{m}^{n+1},
 \end{align*}
+
+where 
+\begin{align*}
+\bm{M}^n = 
+\begin{pmatrix}
+  m_1^{n} & \cdots & 0 \\
+  \vdots  & \ddots & \vdots  \\
+  0 & \cdots & m_N^n
+ \end{pmatrix}
+\end{align*}
+
 \end{frame}
+
 
 
 
@@ -202,6 +229,9 @@ m &= u - D_{-}D_{+}u, \notag \\
 m_t &= -D_{-}(m(u \vee 0)) -D_{+}(m(u \wedge 0)) - mD(u), 
 \end{align*}
 
+$u \vee 0 = max(u, 0)$
+$u \wedge 0 = min(u, 0) $
+
 \vspace{1cm}
 \tiny{M. L. Dahlby, Geometric integration of nonlinear
 wave equations}
@@ -213,8 +243,17 @@ wave equations}
 \frametitle{Necessary condition for stability}
 The CFL condition
 \begin{align*}
-C = \frac{v\Delta t}{\Delta x} \leq C_{\text{max}},
+c \frac{\Delta t}{\Delta x} \leq 1
 \end{align*}
+
+\begin{figure}
+\begin{subfigure}[b]{0.49\textwidth}
+                \includegraphics[width=\textwidth]{gfx/areainitial}
+\end{subfigure}
+\begin{subfigure}[b]{0.49\textwidth}
+                \includegraphics[width=\textwidth]{gfx/areapeakon}
+\end{subfigure}
+\end{figure}
 
 \end{frame}
 
@@ -238,158 +277,45 @@ C = \frac{v\Delta t}{\Delta x} \leq C_{\text{max}},
 \section*{Analysis}
 \begin{frame}
 \frametitle{Analysis}
+\begin{itemize}
+\item Convergence, stability proved by Holden and Raynaud
+\item We were able to verify consistency
+\item Von Neumann stability analysis offers no conclusion
+\end{itemize}
 \end{frame}
 
 \section*{Stability}
 \begin{frame}
 \frametitle{Stability}
 \begin{align*}
-\bm{m} = \bm{u}-D_-D_+\bm{u} = (\bm{I}-\bm{BF})\bm{u} = \bm{A} \bm{u}
-\end{align*} 
-
-\begin{align*}
-\bm{m} &= \bm{Au} \\
-\bm{m}_t &= -\bm{BMu} - \bm{MCu} = \bm{-Qu},
+\bm{m}^n &= (\bm{I}-\bm{BF})\bm{u}^n = \bm{A} \bm{u}^n \\
+\bm{m}^n_t &= -\bm{BM}^n \bm{u}^n - \bm{M}^n\bm{Cu}^n = \bm{-Qu}^n,
 \end{align*}
 
 \begin{align*}
-\bm{m}^{n+1} &= \bm{m} + k\bm{m}_t \\
-\bm{m}^{n+1} &= \bm{m} + k\bm{Qu} \\
-\bm{u}^{n+1} &= \bm{A^{-1}m^{n+1}} = \left(\bm{I} -\bm{A^{-1}}k\bm{Q}\right)\bm{u} = \bm{Zu}.
+\bm{m}^{n+1} &= \bm{m}^n + k\bm{m}^n_t \\
+\bm{m}^{n+1} &= \bm{m}^n - k\bm{Qu}^n \\
+\bm{u}^{n+1} &= \bm{A}^{-1} \bm{m}^{n+1} = \left(\bm{I} -\bm{A}^{-1} k\bm{Q}\right)\bm{u}^n = \bm{Zu}^n.
 \end{align*}
 \end{frame}
 
-
+\section*{Implementation}
 \begin{frame}
-\frametitle{Bullet Points}
-\begin{itemize}
-\item Lorem ipsum dolor sit amet, consectetur adipiscing elit
-\item Aliquam blandit faucibus nisi, sit amet dapibus enim tempus eu
-\item Nulla commodo, erat quis gravida posuere, elit lacus lobortis est, quis porttitor odio mauris at libero
-\item Nam cursus est eget velit posuere pellentesque
-\item Vestibulum faucibus velit a augue condimentum quis convallis nulla gravida
-\end{itemize}
+\frametitle{Improving computational efficiency}
+
+\begin{align*}
+\bm{Au} = \bm{m}
+\end{align*}
+
+Alternative: discrete convolution product
+\begin{align*}
+u = \mathcal{F}^{-1} (\mathcal{F} (g) \cdot \mathcal{F}(m))
+\end{align*}
+
+Result: $77\%$ reduction in computational time
+
+\vspace{2cm}
+\tiny{Definition of g presented in paper by Holden and Raynaud}
 \end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Blocks of Highlighted Text}
-\begin{block}{Block 1}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lectus nisl, ultricies in feugiat rutrum, porttitor sit amet augue. Aliquam ut tortor mauris. Sed volutpat ante purus, quis accumsan dolor.
-\end{block}
-
-\begin{block}{Block 2}
-Pellentesque sed tellus purus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum quis magna at risus dictum tempor eu vitae velit.
-\end{block}
-
-\begin{block}{Block 3}
-Suspendisse tincidunt sagittis gravida. Curabitur condimentum, enim sed venenatis rutrum, ipsum neque consectetur orci, sed blandit justo nisi ac lacus.
-\end{block}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Multiple Columns}
-\begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
-
-\column{.45\textwidth} % Left column and width
-\textbf{Heading}
-\begin{enumerate}
-\item Statement
-\item Explanation
-\item Example
-\end{enumerate}
-
-\column{.5\textwidth} % Right column and width
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lectus nisl, ultricies in feugiat rutrum, porttitor sit amet augue. Aliquam ut tortor mauris. Sed volutpat ante purus, quis accumsan dolor.
-
-\end{columns}
-\end{frame}
-
-%------------------------------------------------
-\section{Second Section}
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Table}
-\begin{table}
-\begin{tabular}{l l l}
-\toprule
-\textbf{Treatments} & \textbf{Response 1} & \textbf{Response 2}\\
-\midrule
-Treatment 1 & 0.0003262 & 0.562 \\
-Treatment 2 & 0.0015681 & 0.910 \\
-Treatment 3 & 0.0009271 & 0.296 \\
-\bottomrule
-\end{tabular}
-\caption{Table caption}
-\end{table}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Theorem}
-\begin{theorem}[Mass--energy equivalence]
-$E = mc^2$
-\end{theorem}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
-\frametitle{Verbatim}
-\begin{example}[Theorem Slide Code]
-\begin{verbatim}
-\begin{frame}
-\frametitle{Theorem}
-\begin{theorem}[Mass--energy equivalence]
-$E = mc^2$
-\end{theorem}
-\end{frame}\end{verbatim}
-\end{example}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Figure}
-Uncomment the code on this slide to include your own image from the same directory as the template .TeX file.
-%\begin{figure}
-%\includegraphics[width=0.8\linewidth]{test}
-%\end{figure}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
-\frametitle{Citation}
-An example of the \verb|\cite| command to cite within the presentation:\\~
-
-This statement requires citation \cite{p1}.
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{References}
-\footnotesize{
-\begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
-\bibitem[Smith, 2012]{p1} John Smith (2012)
-\newblock Title of the publication
-\newblock \emph{Journal Name} 12(3), 45 -- 678.
-\end{thebibliography}
-}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\Huge{\centerline{The End}}
-\end{frame}
-
-%----------------------------------------------------------------------------------------
 
 \end{document} 
