@@ -9,7 +9,7 @@ doublePeakon = @(x,t) peakon(x,t,1,-1) + peakon(x,t,1,1);
 peakonOvertake = @(x,t) peakon(x,t,2,0) + peakon(x,t,1,5);
 peakonAntipeakon = @(x,t) peakon(x,t,1,0) - antipeakon(x,t,1,20);
 
-xmin = -5;
+xmin = 0;
 xmax = 10;
 x = linspace(xmin,xmax,2000);
 
@@ -31,7 +31,7 @@ plot(x,doublePeakon(x,t(2)),'b--')
 
 
 % Double peakon interaction
-xmin = -5;
+xmin = 0;
 xmax = 25;
 x = linspace(xmin,xmax,2000);
 p3 = figure;
@@ -61,4 +61,22 @@ plot(x,peakonAntipeakon(x,t(3)),'b-.')
 % print(p1,'-dpng','-r400','peakon')
 % print(p2,'-dpng','-r400','doublepeakon')
 % print(p3,'-dpng','-r400','peakonovertake')
- print(p4,'-dpng','-r400','peakonantipeakon')
+% print(p4,'-dpng','-r400','peakonantipeakon')
+
+
+% plot area under curve for peakon and another initial condition
+p5 = figure;
+hold on
+exps = exp(-((x-(xmax-xmin)/2)/4).^2);
+area(x,exps)
+areaundersine = 7.09;
+c = areaundersine / 2;
+axis([xmin xmax 0 c])
+p6 = figure;
+area(x,peakon(x,0,c,(xmax-xmin)/2))
+axis([xmin xmax 0 c])
+
+print(p5,'-dpng','-r400','areainitial')
+print(p6,'-dpng','-r400','areapeakon')
+
+
