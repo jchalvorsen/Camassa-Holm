@@ -16,6 +16,7 @@ Content
     - ~~Numerical convergence tests (space/time)~~ REVISIT TIME
     - ~~Errors~~
     - Justify correctness by evaluating behavior, compared to reference solution(s)
+    - Semi-discretization
 - Analysis
     - ~~Holden/Raynaud: main points of analysis~~
     - ~~Consistency~~
