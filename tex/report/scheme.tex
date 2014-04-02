@@ -48,7 +48,7 @@ This makes it necessary to find an estimate for $c$. This was done by finding th
 \begin{figure}[h]
         \centering
         \includegraphics[width=0.8\textwidth]{gfx/erroroftime}
-        \caption{Error plots for decreasing $h$, constant time and space interval.}
+        \caption{Error plots for decreasing $h$, constant time and space interval. Initial condition: peakon centered in $x = 0$. End: analytical peakon lies at $x = 20$.}
         \label{fig:erroroftime}
 \end{figure}
 A preliminary conclusion based on the plot of errors for decreasing spacial stepsize $h$ (Figure \ref{fig:erroroftime}) shows that decreasing $h$ will improve the approximation. Figure \ref{fig:attimeT} shows that as the spacial stepsize $h$ decreases, our scheme becomes a good approximation of the solution. \\
@@ -56,7 +56,7 @@ A preliminary conclusion based on the plot of errors for decreasing spacial step
 \begin{figure}[h]
         \centering
         \includegraphics[width=0.8\textwidth]{gfx/attimeT}
-        \caption{Plot of approximated solution together with analytical solution for decreasing spacial step $h$.}
+        \caption{Plot of approximated solution together with analytical solution for decreasing spacial step $h$. Initial condition: peakon centered in $x = 0$.}
         \label{fig:attimeT}
 \end{figure}
 
@@ -82,8 +82,8 @@ The Camassa-Holm equation has one critical property regarding convergence. Not o
 \subsection*{Semi-discretization}
 Writing 
 \begin{align*}
-m_t = - D_- (m u) - m D u = f(m)
-\end{align*},
+m_t = - D_- (m u) - m D u = f(m),
+\end{align*}
 
 one may obtain a system of ODEs which can be solved with standard numerical software, though each evaluation of $f$ requires a transformation from $m$ to $u$. Additionally, in the end one needs to transform the resulting matrix of $m$ values back to $u$. Testing a variety of MATLAB's builtin ODE solvers, including \emph{ode45}, \emph{ode15s} and \emph{ode113}, we surprisingly discovered that our explicit scheme based on Euler's method was far superior in every aspect to any other integrator available to us. 
 
