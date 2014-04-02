@@ -1,3 +1,22 @@
+\subsection*{Invertibility of $\bm{A}$}
+Since the scheme depends on transformation back and forth between $m$ and $u$, it is crucial that the linear operator $A$ is invertible. Its invertibility can be shown in a few simple steps. First, note that $A$ can be written in circular matrix form
+\begin{align*}
+\bm{A} = 
+\begin{pmatrix}
+  (1 + \frac{2}{h^2}) & -\frac{1}{h^2} &  & -\frac{1}{h^2} \\
+  -\frac{1}{h^2} & \ddots & \ddots  &  & &   \\
+  & \ddots & \ddots & -\frac{1}{h^2}\\
+  -\frac{1}{h^2} & & -\frac{1}{h^2} & (1 + \frac{2}{h^2})
+ \end{pmatrix}.
+\end{align*}
+
+Then it is fairly easy to see that $A$ is diagonally dominant, since
+\begin{align*}
+|1 + \frac{2}{h^2}| = 1 + \frac{2}{h}> |-\frac{1}{h^2}| + |-\frac{1}{h^2}| = \frac{2}{h^2}.
+\end{align*}
+
+Since a diagonally dominant matrix is non-singular, $A$ is invertible.
+
 \subsection*{Convergence of Holden Raynaud}
 Helge Holden and Xavier Raynaud proved the convergence of their finite difference scheme in their article, under the assumption that $u_{0} - u_{0}'' \geq 0$ for initial data $u_{0} \in H^{1}([0,1])$. This proof is far beyond the scope of our course, so only an outline of the proof will be provided. \\
 
