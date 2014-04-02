@@ -61,7 +61,7 @@ with $\bm{M}$ a diagonal matrix with elements from $\bm{m}$. When we also do the
 \bm{m}^{n+1} &= \bm{m} + k\bm{Qu} \\
 \bm{u}^{n+1} &= \bm{A^{-1}m^{n+1}} = \left(\bm{I} -\bm{A^{-1}}k\bm{Q}\right)\bm{u} = \bm{Zu}.
 \end{align*}
-For us to have stability we may try to bound either the spectral radius or some matrix norm to be bounded by 1. However, this proved to be quite difficult and well beyond our scope, mainly because the $\bm{Q}$ matrix is dependent upon $\bm{m}$ (and then $\bm{u})$. Furthermore, the inverse of the tridiagonal (with corners) matrix $\bm{A}$ doesn't have an easy analytical solution. This also ruins any attempts of applying Gershgorin's theorem.
+To have stability we may try to bound either the spectral radius the matrix norm by 1. However, this proved to be quite difficult and well beyond our scope, mainly because the $\bm{Q}$ matrix is dependent upon $\bm{m}$ (and then $\bm{u})$. Furthermore, the inverse of the tridiagonal (with corners) matrix $\bm{A}$ doesn't have an easy analytical solution. This also ruins any attempts of applying Gershgorin's theorem.
 
 \subsection*{von Neumann's stability criterion}
 An attempt at von Neumann's stability analysis was made, despite the fact that the procedure is primarily for finite difference schemes applied to linear partial differential equations. We define $U_{j}^{n} = g^{n}e^{i\theta j}$. For von Neumann stability, the desired inequality is
