@@ -8,23 +8,24 @@ FRAMELENGTH = 1 / FRAMERATE;
 N = length(varargin);
 
 % Number of time points
-T = size(varargin{1}, 1);
-for j = 2:N
-    T = max(T, size(varargin{j}, 1));
-end
+T = 0;
+% Let U0 hold the data initial data across all series
+U0 = zeros(N, length(x));
 
-% Let U hold the data for each time step across all series
-U = zeros(N, length(x));
+% Max/min values for axis bounds
+Umax = -Inf;
+Umin = Inf;
+
 for j = 1:N
-    U(j, :) = varargin{j}(1, :);
+    T = max(T, size(varargin{j}, 1));
+    U0(j, :) = varargin{j}(1, :);
+    Umax = max(Umax, max(max(varargin{j})));
+    Umin = min(Umin, min(min(varargin{j})));
 end
 
-% Plot initial data
+% Plot initial data and proceed to animate the rest
 figure
-plothandle = plot(x, U);
-%Umax = max(U(1, :));
-Umax = max(max(U));
-Umin = min(min(U));
+plothandle = plot(x, U0);
 ylim([Umin, Umax]);
 for j = 2:T
     for k = 1:N
