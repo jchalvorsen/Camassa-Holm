@@ -145,7 +145,7 @@ function [ F ] = forward_matrix(N, h)
 F = - transpose(backward_matrix(N, h));
 end
 
-%% Timestep and CFL condition
+%% Time step and CFL condition
 function [ k ] = calculatetimestep(initial, a, b, h)
 % Calculate potential maximum area of a peakon to estimate maximum height
 areaAbove = integral(@(x) max(initial(x), 0), a, b);
@@ -154,7 +154,7 @@ A = max(areaAbove, areaBelow);
 c = A / 2;
 
 % Use the CFL condition and assume the maximum height is equal to the
-% velocity of the wave (assuming it is a wave).
+% speed of the wave (assuming it is a wave).
 % Multiply by a heuristic "goodness factor" to overestimate its maximum velocity.
 k = h / (1.1 * c);
 
