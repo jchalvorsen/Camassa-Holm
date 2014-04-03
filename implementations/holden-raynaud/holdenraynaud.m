@@ -16,8 +16,8 @@
 %                         Default: true.
 %       - 'PrintTiming':  true/false. Toggles whether or not to print the
 %                         computational time when finished. Default: true.
-%       - 'dt':           double. Override the timestep given from the CFL
-%                         condition heruistic with a user-supplied value.
+%       - 'dt':           double. Override the time step given from the CFL
+%                         condition heuristic with a user-supplied value.
 %                         Not recommended for ordinary use.
 %  Examples:
 %
@@ -54,18 +54,18 @@ initialdata = initial(x);
 % Temporal step size
 dt = calculatetimestep(initial, xmin, xmax, h);
 if timestep == 0
-    % Use timestep calculcated from CFL
+    % Use time step calculcated from CFL
     k = dt;
 else
-    % Use user-supplied timestep
+    % Use user-supplied time step
     k = timestep;
     if k > dt
-       warning(['User-supplied timestep is larger than CFL-based heuristic. ' ...
+       warning(['User-supplied time step is larger than CFL-based heuristic. ' ...
            'Stability may suffer as a result.']);
     end
 end
 
-% Adjust timestep (downward) so that t(end) == T. M is number of time values
+% Adjust time step (downward) so that t(end) == T. M is number of time values
 M = fix(T/ k) + 2;
 k = T / (M - 1);
 
@@ -145,7 +145,7 @@ function [ F ] = forward_matrix(N, h)
 F = - transpose(backward_matrix(N, h));
 end
 
-%% Timestep and CFL condition
+%% Time step and CFL condition
 function [ k ] = calculatetimestep(initial, a, b, h)
 % Calculate potential maximum area of a peakon to estimate maximum height
 areaAbove = integral(@(x) max(initial(x), 0), a, b);
@@ -154,7 +154,7 @@ A = max(areaAbove, areaBelow);
 c = A / 2;
 
 % Use the CFL condition and assume the maximum height is equal to the
-% velocity of the wave (assuming it is a wave).
+% speed of the wave (assuming it is a wave).
 % Multiply by a heuristic "goodness factor" to overestimate its maximum velocity.
 k = h / (1.1 * c);
 
