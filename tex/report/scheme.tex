@@ -1,4 +1,4 @@
-The first finite difference scheme considered, was the one used by Holden and Raynaud \cite{holden2006convergence}:
+The finite difference scheme considered was the one used by Holden and Raynaud \cite{holden2006convergence}:
 \begin{align}
 m &= u - D_{-}D_{+}u, \notag \\ 
 m_t &= -D_{-}(mu) - mD(u),
@@ -11,7 +11,7 @@ D_{+}u_{j}^{n} = \frac{u_{j}^{n}-u_{j-1}^{n}}{h},\quad
 D_{-}u_{j}^{n} = \frac{u_{j+1}^{n}-u_{j}^{n}}{h},\quad
 D = \frac{D_{+}+D_{-}}{2}.
 \end{align}
-The main disadvantage of this scheme is that one has to assume only positive values of $u$.
+The main disadvantage of this scheme is that one has to assume only positive values of $u$. However, it is debatable whether a negative $u$ makes sense or not.
 
 Our finite difference scheme is based on a scheme presented by Morten Lien Dahlby\cite{dahlby2007geometric}, and is a slight modification of the scheme presented by Holden and Raynaud.
 
