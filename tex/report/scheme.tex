@@ -17,6 +17,7 @@ Our finite difference scheme is based on a scheme presented by Morten Lien Dahlb
 \begin{align}
 m &= u - D_{-}D_{+}u, \notag \\ 
 m_t &= -D_{-}(m(u \vee 0)) -D_{+}(m(u \wedge 0)) - mD(u), 
+\label{eq:modscheme}
 \end{align}
 where $(u \vee 0) = \text{max}(u,0)$ and $(u \wedge 0) = \text{min}(u,0)$.
 
