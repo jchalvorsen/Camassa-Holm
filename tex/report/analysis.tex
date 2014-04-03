@@ -56,13 +56,27 @@ which is equal to equation (\ref{eq:CHhamiltonian}), so our scheme is consistent
 
 \subsection*{Stability}
 The finite difference scheme can be summarized in matrix form in the following way:
-Define $\bm{B}$ as the backwards difference matrix operator, $\bm{F}$ as the forwards difference operator and $\bm{C}$ as the mean of $\bm{B}$ and $\bm{F}$. Furthermore, define $\bm{A}$ as the transformation to go from $\bm{u}$ to $\bm{m}$, ie:
+Define $\bm{B}$ as the backwards difference matrix operator, $\bm{F}$ as the forwards difference operator and $\bm{C}$ as the mean of $\bm{B}$ and $\bm{F}$. Furthermore, $\bm{A}$ is defined as the transformation from $\bm{u}$ to $\bm{m}$, ie:
 \begin{align*}
-\bm{m} = \bm{u}-D_-D_+\bm{u} = (\bm{I}-\bm{BF})\bm{u} = \bm{A} \bm{u}
+\bm{m} = \bm{u}-D_-D_+\bm{u} = (\bm{I}-\bm{BF})\bm{u} = \bm{A} \bm{u},
 \end{align*} 
 
+where the difference operators are defined as
+\begin{align*}
+\bm{B} = \frac{1}{h}
+\begin{pmatrix}
+   1 &           &        & -1  \\
+  -1 & \ddots    &        &     \\
+     & \ddots    & \ddots &	    \\
+     &           &     -1 &  1
+ \end{pmatrix},
+\end{align*}
+and 
+\begin{align*}
+\bm{F} = -\bm{B}^T.
+\end{align*}
 
-We can rewrite the system as:
+We can rewrite the system in equation (\ref{eq:discretized}) as:
 \begin{align*}
 \bm{m} &= \bm{Au} \\
 \bm{m}_t &= -\bm{BMu} - \bm{MCu} = \bm{-Qu},
@@ -71,10 +85,10 @@ We can rewrite the system as:
 with $\bm{M}$ a diagonal matrix with elements from $\bm{m}$. When we also do the integration and the inverse $\bm{A}$ we get
 \begin{align*}
 \bm{m}^{n+1} &= \bm{m} + k\bm{m}_t \\
-\bm{m}^{n+1} &= \bm{m} + k\bm{Qu} \\
+\bm{m}^{n+1} &= \bm{m} - k\bm{Qu} \\
 \bm{u}^{n+1} &= \bm{A^{-1}m^{n+1}} = \left(\bm{I} -\bm{A^{-1}}k\bm{Q}\right)\bm{u} = \bm{Zu}.
 \end{align*}
-To have stability we may try to bound either the spectral radius the matrix norm by 1. However, this proved to be quite difficult and well beyond our scope, mainly because the $\bm{Q}$ matrix is dependent upon $\bm{m}$ (and then $\bm{u})$. Furthermore, the inverse of the tridiagonal (with corners) matrix $\bm{A}$ doesn't have an easy analytical solution. This also ruins any attempts of applying Gershgorin's theorem.
+To have stability we may bound either the spectral radius or the matrix norm of $\bm{Z}$ by 1. However, this proved to be quite difficult and well beyond our scope, mainly because the $\bm{Q}$ matrix is dependent upon $\bm{m}$ (and therefore $\bm{u})$. Furthermore, the inverse of the tridiagonal (with corners) matrix $\bm{A}$ doesn't have an easy analytical solution. Even though we can bound eigenvalues for quite a few of the sub-matrices we do not get a nice analytical solution. Whether this bound exists and behaves well is still a question open to more research.
 
 \subsection*{von Neumann's stability criterion}
 An attempt at von Neumann's stability analysis was made, despite the fact that the procedure is primarily for finite difference schemes applied to linear partial differential equations. We define $U_{j}^{n} = g^{n}e^{i\theta j}$. For von Neumann stability, the desired inequality is
