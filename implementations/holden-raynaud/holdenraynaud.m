@@ -1,3 +1,30 @@
+%HOLDENRAYNAUD Solves the Camassa-Holm equation by the Holden-Raynaud scheme.
+%   [U, x, t] = HOLDENRAYNAUD(N, T, xdomain, initial) solves the 
+%   Camassa-holm equation on the spacial domain xdomain = [xmin, xmax] and 
+%   temporal interval [0, T] with a resolution of N points on the x-axis, 
+%   using the function initial(x) as a periodic initial condition. x and t 
+%   are row vectors of spatial and temporal values respectively, with 
+%   lengths N = length(x) and M = length(t), such that the result matrix U
+%   has dimensions M x N. Note that the scheme used here is extended with
+%   the proposition put forward by M. Dahlby in order to handle antipeakons.
+% 
+%   HOLDENRAYNAUD also accepts additional optional arguments. Following
+%   standard conventions, the options are supplied in a (..., 'key', value)
+%   manner. Available options:
+%       - 'ShowProgress': true/false. Toggles whether or not to show a
+%                         progressbar as the calculations are running.
+%                         Default: true.
+%       - 'PrintTiming':  true/false. Toggles whether or not to print the
+%                         computational time when finished. Default: true.
+%       - 'dt':           double. Override the timestep given from the CFL
+%                         condition heruistic with a user-supplied value.
+%                         Not recommended for ordinary use.
+%  Examples:
+%
+%  initial = @(x) exp(-abs(x));
+%  [U, x, t] = holdenraynaud(1024, 10, [-10, 10], initial, 'ShowProgress', false);
+%  surf(x, t, U);
+
 function [ U, x, t ] = holdenraynaud(N, T, xdomain, initial, varargin)
 
 [ showprogress, printtiming, timestep ] = parse(varargin);
@@ -27,7 +54,7 @@ initialdata = initial(x);
 % Temporal step size
 dt = calculatetimestep(initial, xmin, xmax, h);
 if timestep == 0
-    % USe timestep calculcated from CFL
+    % Use timestep calculcated from CFL
     k = dt;
 else
     % Use user-supplied timestep
@@ -67,10 +94,10 @@ if showprogress
 end
 
 % Difference operator matrices
-A = forwardbackward_matrix(N, h);
 B = backward_matrix(N, h);
 F = forward_matrix(N, h);
-C = central_matrix(N, h);
+C = (backward_matrix(N, h) + forward_matrix(N, h)) / 2;
+A = speye(N) - B * F;
 
 %% Execution
 for i = 1:M - 1
@@ -90,7 +117,8 @@ end
 %% Cleanup and return
 elapsed = toc(ticstart);
 if printtiming
-    fprintf('Spent %4.2f seconds on solving equation.\n', elapsed);
+    fprintf('Solved Camassa-Holm in %4.2f seconds with a spatial grid size of %d.\n', ...
+        elapsed, N);
 end
 
 if showprogress
@@ -117,20 +145,7 @@ function [ F ] = forward_matrix(N, h)
 F = - transpose(backward_matrix(N, h));
 end
 
-function [ C ] = central_matrix(N, h)
-e = ones(N, 1);
-C = spdiags([-e/(2*h), e/(2*h)], [-1, 1], N, N);
-C(1,N) = -1/(2*h);
-C(N,1) = 1/(2*h);
-end
-
-function [ A ] = forwardbackward_matrix(N, h)
-e = ones(N, 1);
-A = spdiags([-e, (h^2 + 2) * e, -e], -1:1, N, N) / (h^2);
-A(N,1) = -1/h^2;
-A(1,N) = -1/h^2;
-end
-
+%% Timestep and CFL condition
 function [ k ] = calculatetimestep(initial, a, b, h)
 % Calculate potential maximum area of a peakon to estimate maximum height
 areaAbove = integral(@(x) max(initial(x), 0), a, b);
