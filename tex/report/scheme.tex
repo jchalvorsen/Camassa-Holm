@@ -28,9 +28,9 @@ To find an appropriate time step, the Courant–Friedrichs–Lewy (CFL) conditio
 c\frac{\Delta t}{\Delta x} \leq 1,
 \end{align*}
 where $c$ is the velocity of the wave, $\Delta t$ is the length of the time step, and $\Delta x$ is the length of the spacial step. Rearranging this inequality gives an expression for $\Delta t$:
-\begin{align}
+\begin{align*}
 \Delta t \leq \frac{\Delta x}{c}
-\end{align}
+\end{align*}
 An estimate for $c$ is found in the following way: Since we do not know how fast our waves move we use a simple heuristic. We translate all the area in the initial condition into a peakon (which always have the area $2c$) and thereby bound the the speed equal to the height of this peakon. A simple illustration can be found in Figure \ref{fig:cfl}. The same heuristic can also be used for antipeakons.
 
 
