@@ -1,6 +1,6 @@
 \subsection*{Transforming $m$ to $u$}
 
-For each time step when solving the scheme (eq. \ref{eq:modscheme}), one essentially transforms $u$ to $m$ by the transformation matrix $\bm{A}$, such that $\bm{m} = \bm{Au}$. Transforming $m$ back to $u$ usually involves solving the linear system $\bm{Au} = \bm{m}$. 
+For each time step when solving the scheme shown in equation (\ref{eq:modscheme}), one essentially transforms $u$ to $m$ by the transformation matrix $\bm{A}$, such that $\bm{m} = \bm{Au}$. Transforming $m$ back to $u$ usually involves solving the linear system $\bm{Au} = \bm{m}$. 
 
 Holden and Raynaud \cite{holden2006convergence} present a more efficient way of transforming $m$ to $u$. Denoting the linear operator from $u$ to $m$ as $L$, $u$ can be written as a discrete convolution product of $m$ and $g$:
 \begin{align*}
