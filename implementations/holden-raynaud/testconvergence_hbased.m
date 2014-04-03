@@ -12,14 +12,16 @@ addpath(fullfile(path, '../../util'));
 clear path;
 
 %% Configuration
-I = 8:2:14;
+I = 12:1:18;
 h = zeros(1, length(I));
 N = 2.^I;
+
+%I = 14:2:20;
 ts = 2.^(-I);
 % Maximum time value
 T = 0.01;
 xmin = -10;
-xmax = 35;
+xmax = 10;
 
 % Compression settings
 % nx = number of x values in compressed matrix
@@ -28,19 +30,20 @@ nx = 800;
 nt = 1;
 
 %% Initial condition and reference solution
-ref = @(x,t) exp(-abs(x-t));
+%ref = @(x,t) exp(-abs(x-t));
+ref = @(x,t) exp(-abs(x -t));%; + exp(-abs(x - 5 - t));
 initial = @(x) ref(x, 0);
 
 figure
 hold on
 color = hsv(length(I));
-
+q = 6.9e-05;
 %% Loop to solve equation and check convergence
 errors = zeros(1, length(I));
 finalvalue = zeros(length(I), nx);
 normsplot = zeros(length(I), nx);
 for j = 1:length(I);
-    [U, x, t] = holdenraynaud(N(j), T, [xmin, xmax], initial);
+    [U, x, t] = holdenraynaud(N(j), T, [xmin, xmax], initial, 'dt', q);
     
     h(j) = x(2) - x(1);
     %generate reference solution:
@@ -74,11 +77,11 @@ legend(legenddata,'Location','NorthWest')
 figure
 plot(log(h),log(errors),'b*')
 hold on
-x = linspace(log(h(1)),log(h(end)));
-f = p(1)*x + p(2);
-f2 = 1*x + p(2);
-plot(x,f,'b')
-plot(x,f2,'r')
+z = linspace(0.9*log(h(1)),1.1*log(h(end)));
+f = p(1)*z + p(2);
+f2 = 1*z + p(2);
+plot(z,f,'b')
+plot(z,f2,'r')
 xlabel('log of stepsize h')
 ylabel('log of error')
 %print(gcf,'-dpng','-r400','loglog')
@@ -92,6 +95,8 @@ for i = 1:length(I)
 end
 % plot analytical solution
 plot(xcomp,ref(xcomp,T),'k','LineWidth',1.3)
+legenddata(end+1) = cellstr('Initial');
+plot(xcomp,ref(xcomp,0),'k-.')
 legend(legenddata,'location', 'best')
 %print(gcf,'-dpng','-r400','attimeT')
 

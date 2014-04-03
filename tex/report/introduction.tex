@@ -16,9 +16,9 @@ The equation is used to model waves in shallow water. The characteristic solutio
 
 
 
-In this paper, the only cases considered are when $\kappa = 0$. This is sufficient due to the fact that solutions for a nonzero $\kappa$ are obtained from the solutions using $\kappa = 0$ by the transformation $v(x,t) = u(x + \kappa t, t) - \kappa$. Removing this term makes the soliton solutions peaked. These solutions are called peakons and have a discontinuity in the first derivative in the peak. Peakons also have a constant traveling speed equal to its height.
+In this paper, the only cases considered are when $\kappa = 0$. Removing this term makes the soliton solutions peaked. These solutions are called peakons and have a discontinuity in the first derivative in the peak. Peakons also have a constant traveling speed equal to its height.
 
-A single peakon is presented in figure \ref{fig:peakon} and we see that the peakon retains its shape over time. Any linear combination of peakons is called a multipeakon, one can be seen in figure \ref{fig:doublepeakon}. Peakons can also interact with other peakons of different size, and in figure \ref{fig:peakonovertake} we see that both of the peakons retain their original form after the collision is over. Finally we see in figure \ref{fig:peakonantipeakon} a peakon and an antipeakon collide. An antipeakon is a negative peakon. What is shown here is the solution that conserves the energy. Another solution would be the zero line to eternity (non-conservative solution).
+A single peakon is presented in Figure \ref{fig:peakon} and we see that the peakon retains its shape over time. A linear combination of peakons is called a multipeakon, one can be seen in Figure \ref{fig:doublepeakon}. Peakons can also interact with other peakons of different size, and in Figure \ref{fig:peakonovertake} we see that both of the peakons retain their original form after the collision is over. Finally, we see in Figure \ref{fig:peakonantipeakon} a peakon and an antipeakon collide. An antipeakon is a negative peakon. What is shown here is the solution that conserves the energy, where the peakons re-emerge after the collision. Another solution, called a non-conservative solution, would involve the two peakons completely canceling each other out.
 
 \begin{figure}[h]
         \centering
@@ -42,7 +42,5 @@ A single peakon is presented in figure \ref{fig:peakon} and we see that the peak
                 \caption{Peakon - antipeakon, [t = 0, 10, 15]}
                 \label{fig:peakonantipeakon}
         \end{subfigure}
-        \caption{Interactions between peakons.}
+        \caption{Peakons at different times.}
 \end{figure}
-
-Following we define a finite difference scheme to solve the Camassa-Holm equation. Our scheme is highly influenced by a scheme found by Holden and Raynaud \cite{holden2006convergence}.

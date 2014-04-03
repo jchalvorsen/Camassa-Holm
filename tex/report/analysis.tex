@@ -18,7 +18,7 @@ Then it is fairly easy to see that $A$ is diagonally dominant, since
 Since a diagonally dominant matrix is non-singular, $A$ is invertible.
 
 \subsection*{Convergence of Holden Raynaud}
-Helge Holden and Xavier Raynaud proved the convergence of their finite difference scheme in their article, under the assumption that $u_{0} - u_{0}'' \geq 0$ for initial data $u_{0} \in H^{1}([0,1])$. This proof is far beyond the scope of our course, so only an outline of the proof will be provided. \\
+Helge Holden and Xavier Raynaud proved the convergence of their finite difference scheme \cite{holden2006convergence}, under the assumption that $u_{0} - u_{0}'' \geq 0$ for initial data $u_{0} \in H^{1}([0,1])$. This proof is far beyond the scope of our course, so only an outline of the proof will be provided. \\
 
 First, it is shown that if $m_{i}(0) \geq 0 \; \forall \;i$, then any solution $u(t)$ will have $m_{i}(t) \geq 0 \; \forall \;i $. Further, a uniform bound on the $H^{1}$ norm of the sequence $u^{n}$ in [0,T] is established. This also guarantees the existence of solutions in [0,T] for any given $T > 0$, since $\text{max}_{i}|u_{i}^{n}(t)| = \|u^{n}(\cdot,t)\|_{L^{\infty}} \leq \mathcal{O}(1) \|u^{n}\|_{H^{1}}$ remains bounded.
 
@@ -27,38 +27,32 @@ After this, it is shown that $u_{x}^{n}$ and $u_{t}^{n}$ are bounded in $L^{2}([
 This however, is far beyond the scope of this project, so we begin by proving consistency of our method.
 
 \subsection*{Consistency}
-Our scheme is as following:
-\begin{align}
-m &= u - D_- D_+ u \notag \\
-m_t &=- D_- ( m u ) - m D ( u ),
-\label{eq:discretized}
-\end{align}
-where the operators are defined as in (\ref{eq:operators})
+We only prove consistency for the original scheme in equation (\ref{eq:discretized}), but the proof should be similar for the modified scheme as well. With the difference operators as defined in equation (\ref{eq:operators}) we get that:
 
 \begin{align*}
-D_- D_+ \left( U_j^n \right)  &= \frac{\partial}{\partial x} (u) + \mathcal{O} \left( h^ 2 \right) \\
- D_- \left(M_j^n U_j^n \right) &= m \frac{\partial}{\partial x} (u) + u \frac{\partial}{\partial x} (m) + \mathcal{O} \left( h \right)  \\
+D_- D_+ \left( U_j^n \right)  &= \frac{\partial^2}{\partial x^2} (u) + \mathcal{O} \left( h^ 2 \right), \\
+ D_- \left(M_j^n U_j^n \right) &= m \left( \frac{\partial}{\partial x} (u) + \mathcal{O}(h) \right) + u \left( \frac{\partial}{\partial x} (m) + \mathcal{O} \left( h \right) \right),  \\
 D \left(U_j^n \right) &= \frac{\partial}{\partial x} (u) + \mathcal{O} \left( h^2 \right).
 \end{align*}
 
-If we also use forward Euler to integrate we get that
+We use forward Euler to integrate:
 \begin{align*}
 D_+ (m) =  \frac{\partial}{\partial t} (m) + \mathcal{O}(k).
 \end{align*}
 
-Putting this back into equation (\ref{eq:discretized}) we get
+Putting this back into equation (\ref{eq:discretized})
 
 \begin{align*}
 m &= u - \left( u_{xx} + \mathcal{O}\left(h^2\right) \right) \\
-m_t  + \mathcal{O}(k) &= - \left( m u_x + u m_x + \mathcal{O}(h) \right) - m \left( u_x + \mathcal{O}(h) \right).
+m_t  + \mathcal{O}(k) &= - \left( m \left( u_x + \mathcal{O}(h) \right) +  u \left( m_x + \mathcal{O}(h) \right)  \right) - m \left( u_x + \mathcal{O}(h) \right).
 \end{align*}
 
-Letting the time step and space step go to zero, we get
+Letting the time step and space step go to zero, we have
 \begin{align*}
 m &= u - u_{xx} \\
-m_t &= - m u_x - u m_x - m u_x = - 2m u_x - u m_x,
+m_t &= - 2m u_x - u m_x,
 \end{align*}
-which is equal to equation \ref{eq:CHhamiltonian}, so our scheme is consistent. 
+which is equal to equation (\ref{eq:CHhamiltonian}), so our scheme is consistent. 
 
 \subsection*{Stability}
 The finite difference scheme can be summarized in matrix form in the following way:
@@ -90,7 +84,7 @@ An attempt at von Neumann's stability analysis was made, despite the fact that t
 where $\mu \geq 0$ is a constant. 
 The inequality produced by von Neumann stability analysis was
 \begin{align}
-|g| \leq 1+ \frac{k}{h}\;\vline \;g^{n}e^{i\theta j}\left[\frac{2-2e^{-2i\theta}+ e^{i\theta} - e^{-i\theta}}{2}\right]\vline,
+g \leq 1+ \frac{k}{h} g^{n}e^{i\theta j}\left[\frac{2-2e^{-2i\theta}+ e^{i\theta} - e^{-i\theta}}{2}\right],
 \end{align}
 which is clearly dependent on $h$. This makes von Neumann stability analysis inapplicable for our finite difference scheme.
 
