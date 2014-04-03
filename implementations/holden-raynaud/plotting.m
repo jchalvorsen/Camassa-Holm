@@ -79,4 +79,23 @@ axis([xmin xmax 0 c])
 % print(p5,'-dpng','-r400','areainitial')
 % print(p6,'-dpng','-r400','areapeakon')
 
+%% Paste this code into testsuite to get a peakon antipeakon interaction
+% on experimental data.
 
+% TT = floor([0.01 0.15 0.4] * M);
+% % Peakon antipeakon interaction.
+% p4 = figure;
+% hold on
+% subplot(3,1,1)
+% plot(x,U(TT(1),:),'b')
+% axis([xmin xmax -1 1])
+% %legend('t = 0', 'Location', 'NorthEast')
+% subplot(3,1,2)
+% plot(x,U(TT(2),:),'b')
+% axis([xmin xmax -1 1])
+% %legend('t = 10', 'Location', 'NorthEast')
+% subplot(3,1,3)
+% plot(x,U(TT(3),:),'b')
+% axis([xmin xmax -1 1])
+% %legend('t = 15', 'Location', 'NorthEast')
+% print(p4,'-dpng','-r400','peakonvanishes')
