@@ -11,7 +11,7 @@
 % 
 % - compress: This function compresses (or expands) an arbitrarily-sized
 %             matrix into an arbitrarily configured size by interpolation. 
-%             Very convenient when plotting high-resolution datasets, 
+%             Very convenient when plotting high-resolution data sets, 
 %             particularly for 3D plots, as it retains the ability to 
 %             rotate and manipulate the viewport smoothly, while still 
 %             maintaining the structure of the high-resolution matrix.
