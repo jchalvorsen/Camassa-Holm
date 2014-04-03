@@ -88,9 +88,9 @@ with $\bm{M}$ a diagonal matrix with elements from $\bm{m}$. When we also do the
 \bm{m}^{n+1} &= \bm{m} - k\bm{Qu} \\
 \bm{u}^{n+1} &= \bm{A^{-1}m^{n+1}} = \left(\bm{I} -\bm{A^{-1}}k\bm{Q}\right)\bm{u} = \bm{Zu}.
 \end{align*}
-To have stability we may bound either the spectral radius or the matrix norm of $\bm{Z}$ by 1. However, this proved to be quite difficult and well beyond our scope, mainly because the $\bm{Q}$ matrix is dependent upon $\bm{m}$ (and therefore $\bm{u})$. Furthermore, the inverse of the tridiagonal (with corners) matrix $\bm{A}$ doesn't have an easy analytical solution. Even though we can bound eigenvalues for quite a few of the sub-matrices we do not get a nice analytical solution. Whether this bound exists and behaves well is still a question open to more research.
+To investigate stability we may bound either the spectral radius or the matrix norm of $\bm{Z}$ by 1. However, this proved to be quite difficult and well beyond our scope, mainly because the $\bm{Q}$ matrix is dependent upon $\bm{m}$ (and therefore $\bm{u})$. Furthermore, the inverse of the tridiagonal (with corners) matrix $\bm{A}$ does not have an simple analytical solution. Whether this bound exists and behaves well is still a question open to more research.
 
-\subsection*{von Neumann's stability criterion}
+\subsection*{Von Neumann's stability criterion}
 An attempt at von Neumann's stability analysis was made, despite the fact that the procedure is primarily for finite difference schemes applied to linear partial differential equations. We define $U_{j}^{n} = g^{n}e^{i\theta j}$. For von Neumann stability, the desired inequality is
 \begin{align}
 |g| \leq 1 + \mu k,
