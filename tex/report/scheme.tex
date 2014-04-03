@@ -2,6 +2,7 @@ The first finite difference scheme considered, was the one used by Holden and Ra
 \begin{align}
 m &= u - D_{-}D_{+}u, \notag \\ 
 m_t &= -D_{-}(mu) - mD(u),
+\label{eq:discretized}
 \end{align}
 where the operators are defined as
 \begin{align}
@@ -31,7 +32,7 @@ where $c$ is the velocity of the wave, $\Delta t$ is the length of the time step
 \begin{align*}
 \Delta t \leq \frac{\Delta x}{c}
 \end{align*}
-An estimate for $c$ is found in the following way: Since we do not know how fast our waves move we use a simple heuristic. We translate all the area in the initial condition into a peakon (which always have the area $2c$) and thereby bound the the speed equal to the height of this peakon. A simple illustration can be found in Figure \ref{fig:cfl}. The same heuristic can also be used for antipeakons.
+An estimate for $c$ is found in the following way: Since we do not know how fast our waves move we use a simple heuristic. We translate all the area in the initial condition into a peakon (which always has the area $2c$) and thereby bound the the speed equal to the height of this peakon. A simple illustration can be found in Figures \ref{fig:area1} and \ref{fig:area2}. The same heuristic can also be used for antipeakons.
 
 
 \begin{figure}
@@ -45,7 +46,6 @@ An estimate for $c$ is found in the following way: Since we do not know how fast
                 \caption{Peakon of same area}
                 \label{fig:area2}
 \end{subfigure}
-\label{fig:cfl}
 \caption{Initial condition and peakon of same area, used to estimate $c$.}
 \end{figure}
 
