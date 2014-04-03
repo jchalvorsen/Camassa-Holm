@@ -27,6 +27,7 @@ initialdata = initial(x);
 % Temporal step size
 dt = calculatetimestep(initial, xmin, xmax, h);
 if timestep == 0
+    % USe timestep calculcated from CFL
     k = dt;
 else
     % Use user-supplied timestep
@@ -45,7 +46,8 @@ k = T / (M - 1);
 t = 0:k:T;
 
 % Determine g (see paper by Holden, Raynaud), and pre-calculate fft(g).
-% Note that by replacing N by K = 1 / h the method works on arbitrary intervals.
+% Note that by replacing n in their derivation by K = 1 / h, 
+% the method works on arbitrary intervals.
 K = 1 / h;
 kappa = log( (1 + 2 * K^2 + sqrt(1 + 4*K^2)) / (2 * K ^ 2));
 c = 1 / (1 + 2 * K^2 * (1 - exp(-kappa)));
@@ -57,7 +59,7 @@ fftg = transpose(fft(g));
 U = zeros(M, N);
 U(1, :) = initialdata;
 
-% Time solution evaluation run time
+% Start timer and show progressbar if enabled
 ticstart = tic;
 progress = 0;
 if showprogress
@@ -80,21 +82,12 @@ for i = 1:M - 1
     % Calculate new values for m using Euler's method
     m = m + k * mt;
     
-    % Transform mnext back to u by convolution
+    % Transform m back to u by convolution
     U(i + 1, :) = ifft(fftg .* fft(m));
     updateProgress( (i + 1) / (M) );
-    
-    % Trying the total matrix buildup:
-%     I = spdiags(ones(N,1),0,N,N);
-%     Ms = spdiags(m,0,N,N);
-%     Q = -(B*Ms + Ms*C);
-%     Z = I + A\(k*Q);
-%     U(i+1,:) = Z*u;
-    
 end
 
-%% Exit
-
+%% Cleanup and return
 elapsed = toc(ticstart);
 if printtiming
     fprintf('Spent %4.2f seconds on solving equation.\n', elapsed);
@@ -139,7 +132,7 @@ A(1,N) = -1/h^2;
 end
 
 function [ k ] = calculatetimestep(initial, a, b, h)
-
+% Calculate potential maximum area of a peakon to estimate maximum height
 areaAbove = integral(@(x) max(initial(x), 0), a, b);
 areaBelow = - integral(@(x) min(initial(x), 0), a, b);
 A = max(areaAbove, areaBelow);

@@ -9,48 +9,44 @@ clear path;
 
 %% Configuration
 % Spatial resolution
-N = 5000;
+N = 1024;
 % Maximum time value
-T = 5;
+T = 50;
+% Domain
+xmin = -20;
+xmax = 20;
 
-xmin = -10;
-xmax = 10;
-
-% Compression settings
+% Compression settings (for plotting)
 % nx = number of x values in compressed matrix
-nx = 500;
+nx = 400;
 % nt = number of t values in compressed matrix
-nt = 600;
+nt = 200;
 
 %% Initial condition (as a function of x)
-a = 1;
-%initial = @(x) cosh(min(x, a - x)) / sinh(a / 2);
+peakon = @(x, t) exp(-abs(x - t));
 
-%initial = @(x) [cosh(min(x(1:floor(end/2)), a - x(1:floor(end/2)))), ...
-%    repmat(cosh(min(x(floor(end / 2 + 1)), a - x(floor(end / 2 + 1)))), 1, ...
-%    length(x) - floor(length(x) / 2))] - ...
-%    cosh(min(x(floor(end / 2 + 1)), a - x(floor(end / 2 + 1))));
-%initial = @(x) cosh(min(x, a - x)) + circshift(0.5 * cosh(min(x, a - x)), ...
-%    repmat(round(length(x) / 2), length(x), 1));
-%initial = @(x) exp(-10 * abs(x - 1.2)) + exp(-10 * abs(x - 0.2));
-%initial = @(x) cosh(min(x, a - x)) / sinh(a / 2);
-%initial = @(x) 3 * exp(-abs(x)) - 3 * exp(-abs(x - 10));
-%initial = @(x) exp(-abs(x + 2)) + exp(-abs(x - 2));
-%initial = @(x) 5 * exp(-abs(x + 5)) + 5 * exp(-abs(x - 25));
-%initial = @(x) exp(-abs(x + 5)) - exp(-abs(x - 5));
-%initial = @(x) sin(2 * pi * x / 20) + 1;
-%initial = @(x) sin(pi * x / 2);
-initial = @(x) exp(-abs(x));
-%initial = @(x) sin(pi * x / 10);
-% m1 = (exp(-5) + 6) / (2 * exp(-5) + 3);
-% m2 = (exp(-5) + 2/3) / (exp(-5) + 3);
-% x1 = log(18 * exp(-10) / (exp(-5)) + 6);
-% x2 = log(40 * exp(-10) + 60 * exp(-5));
-% initial = @(x) m1 * exp(-abs(x - x1)) + ...
-%      m2 * exp(-abs(x - x2));
+% Comment/uncomment to pick your desired initial condition. Note that
+% initial conditions must be periodic or approximately periodic.
 
+% Single peakon
+%initial = @(x) peakon(x, 0);
+
+% Double peakon
+%initial = @(x) peakon(x, -5) + peakon(x, 5);
+
+% Peakon-peakon interaction (may require very fine resolution)
+%initial = @(x) peakon(x, -5) + 0.7 * peakon(x, 3);
+
+% Peakon-antipeakon interaction
+%initial = @(x) peakon(x, -5) - peakon(x, 5);
+
+% Smooth initial condition
+initial = @(x) sin(pi * x / (xmax - xmin)) + 1;
+
+% Custom initial function
+%initial = @(x) ????
 %% Solve equation
-[U, x, t] = holdenraynaud(N, T, [xmin, xmax], initial);
+[U, x, t] = holdenraynaud(N, T, [xmin, xmax], initial, 'showprogress', true);
 M = size(U, 1);
 
 %% Compression
